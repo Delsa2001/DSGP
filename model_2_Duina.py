@@ -24,7 +24,5 @@ def predict(image_path, model):
     
 
 
-result =  predict("Testing Images\Images (5).jpeg", model)
-print(result)
 
 
