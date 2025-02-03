@@ -1,9 +1,12 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template,jsonify
 from model_2_Duina import predict, preprocess,model
+import numpy as np
 import os
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = './uploads'
+
+class_labels = ["balcony", "indoor"]
 
 @app.route('/', methods = ['GET', 'POST'])
 def upload_image():
@@ -13,6 +16,7 @@ def upload_image():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(file_path)
             prediction = predict(file_path, model)
+
             return prediction
     
     return render_template('page.html')
@@ -20,5 +24,4 @@ def upload_image():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 
