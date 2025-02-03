@@ -16,6 +16,8 @@ def preprocess(image_path):
 def predict(image_path, model):
     preprocessed_image = preprocess(image_path)
     prediction = model.predict(preprocessed_image)
+    
+
 
     if prediction[0]>0.5:
         return "This is a Indoor space"

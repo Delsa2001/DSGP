@@ -1,13 +1,30 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
 </head>
 <body>
-    <h1>Upload an Image</h1>
+    
     <form method="post" enctype="multipart/form-data">
         <input type="file" name="file">
         <input type="submit" value="Upload">
     </form>
+
+    <button></button>
+
+    <video id = 'video' autoplay="'true"></video>
+    <script>
+        const video = document.getElementById("video");
+        
+        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+            navigator.mediaDevices.getUserMedia({video:true})
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+        }
+    </script>
+
+
+
+    
 </body>
 </html>
