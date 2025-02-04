@@ -15,9 +15,12 @@ def upload_image():
         if file:
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(file_path)
-            prediction = predict(file_path, model)
+            prediction, confidence_score = predict(file_path, model)
 
-            return prediction
+            return jsonify({
+                "prediction": prediction,
+                "confidence": confidence_score  # Now safely wrapped in JSON
+            })
     
     return render_template('page.html')
 

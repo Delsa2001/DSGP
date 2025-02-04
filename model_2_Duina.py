@@ -20,10 +20,15 @@ def predict(image_path, model):
 
 
     if prediction[0]>0.5:
-        return "This is a Indoor space"
+        predicted_class =  "This is a Indoor space"
     else:
-        return "This is Balcony space"
+        predicted_class =  "This is Balcony space"
     
+
+    confidence_score = float(np.max(prediction)) 
+
+
+    return predicted_class, round(confidence_score * 100, 2)
 
 
 

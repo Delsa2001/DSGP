@@ -1,6 +1,25 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <style>
+        .video_container{
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+        #video {
+            width: 100%;
+
+        }
+        #image-preview {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     
@@ -9,18 +28,39 @@
         <input type="submit" value="Upload">
     </form>
 
-    <button></button>
+    <div class="video_container">
+        <video id = 'video' autoplay="true"></video>
+        <canvas id="image-preview"></canvas>
+    </div>
 
-    <video id = 'video' autoplay="'true"></video>
+    <button id="capture">Capture Photo</button>
+
+
     <script>
         const video = document.getElementById("video");
+        const canvas = document.getElementById('image-preview');
+        const capture_button = document.getElementById('capture');
+        const image_context = canvas.getContext('2d');
         
         if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
             navigator.mediaDevices.getUserMedia({video:true})
             .then((stream) => {
                 video.srcObject = stream;
             })
-        }
+            .catch((error) => {
+                console.error("Can't access the camera", error);
+            });
+        };
+
+        capture_button.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            image_context.drawImage(video, 0,0,canvas.width, canvas.heigh);
+
+            //Canvas.style.display = 'block'; 
+        });
+
+
     </script>
 
 
