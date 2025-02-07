@@ -11,16 +11,14 @@ class_labels = ["balcony", "indoor"]
 @app.route('/', methods = ['GET', 'POST'])
 def upload_image():
     if request.method == 'POST':
-        file = request.files['file']
+        file = request.files.get('file')
         if file:
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(file_path)
             prediction, confidence_score = predict(file_path, model)
 
-            return jsonify({
-                "prediction": prediction,
-                "confidence": confidence_score  
-            })
+            return jsonify({"prediction": prediction})
+
     
     return render_template('page.html')
 

@@ -1,56 +1,148 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .video-container {
+            position: relative;
+            width: 50%;
+            margin: auto;
+        }
+        video, canvas {
+            width: 100%;
+            max-width: 500px;
+            border: 2px solid black;
+            display: block;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #submit-btn {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Upload">
+
+    <h1>Image Capture and Prediction</h1>
+
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="file">
+        <button type="button" id="uploadButton">Submit</button>S
     </form>
 
-    <div class="video_container">
-        <video id = 'video' autoplay="true"></video>
-        <canvas id="image-preview"></canvas>
+    <div id="prediction-result"></div>
+
+    <div class="video-container">
+        <video id="video" autoplay></video>
+        <canvas id="canvas" style="display: none;"></canvas>
     </div>
 
-    <button id="capture">Capture Photo</button>
-    <a id="download-link" href="#" style="display:none;" download="captured-image.png">
-        <button>Download Image</button>
-    </a>
+    <div class="controls">
+        <button id="capture-btn">Capture</button>
+        <button id="new-btn" style="display: none;">New</button>
+        <button id="submit-btn">Submit</button>
+    </div>
 
+    <h3 id="prediction-result"></h3>
 
     <script>
         const video = document.getElementById("video");
-        const canvas = document.getElementById('image-preview');
-        const capture_button = document.getElementById('capture');
-        const image_context = canvas.getContext('2d');
-        const download_link = document.getElementById('download-link');
-        
-        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
-            navigator.mediaDevices.getUserMedia({video:true})
-            .then((stream) => {
-                video.srcObject = stream;
-            })
-            .catch((error) => {
-                console.error("Can't access the camera", error);
-            });
-        };
+        const canvas = document.getElementById("canvas");
+        const captureButton = document.getElementById("capture-btn");
+        const newButton = document.getElementById("new-btn");
+        const submitButton = document.getElementById("submit-btn");
+        const predictionResult = document.getElementById("prediction-result");
 
-        capture_button.addEventListener('click', () => {
+        const ctx = canvas.getContext("2d");
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                })
+                .catch((error) => {
+                    console.error("Can't access the camera", error);
+                });
+        }
+
+
+        captureButton.addEventListener("click", () => {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            image_context.drawImage(video, 0,0,canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+            video.style.display = "none";
+            canvas.style.display = "block";
 
+            captureButton.style.display = "none";
+            newButton.style.display = "inline-block";
+            submitButton.style.display = "inline-block";
         });
 
 
+        newButton.addEventListener("click", () => {
+            video.style.display = "block";
+            canvas.style.display = "none";
+
+
+            captureButton.style.display = "inline-block";
+            newButton.style.display = "none";
+            submitButton.style.display = "none";
+        });
+
+        submitButton.addEventListener("click", () => {
+            canvas.toBlob((blob) => {
+                const formData = new FormData();
+                formData.append("file", blob, "captured-image.png");
+
+                fetch("/", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    predictionResult.innerText = `Prediction: ${data.prediction}`;
+                })
+                .catch(error => console.error("Error:", error));
+            }, "image/png");
+        });
+
+        document.getElementById("uploadButton").addEventListener("click", () => {
+        const fileInput = document.getElementById("file");
+        const predictionResult = document.getElementById("prediction-result");
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        fetch("/", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            predictionResult.innerText = `Prediction: ${data.prediction}`;
+        })
+        .catch(error => console.error("Error:", error));
+    });
     </script>
 
-
-
-    
 </body>
 </html>
