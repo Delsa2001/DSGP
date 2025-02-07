@@ -14,6 +14,8 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
+            height: 100vh;
+            background-color: #f4f4f9;
         }
         .video-container {
             position: relative;
@@ -31,38 +33,105 @@
         }
         button {
             padding: 10px 15px;
-            margin: 5px;
             font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
             cursor: pointer;
         }
         #submit-btn {
             display: none;
         }
+        #cam-Container{
+            width: 50%;
+            float: left;
+            margin-bottom: 20%;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-left: 5%;
+
+        }
+
+        #form{
+            width: 30%;
+            float: right;
+            margin-bottom: 20%;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-right: 5%;
+
+        }
+
+        .custom-file-upload {
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+        display: inline-block;
+        }
+
+
+        .custom-file-upload:hover {
+            background-color: #45a049;
+        }
+        #file {
+        display: none;
+        }
+
+        h1{
+            margin-bottom: 10%;
+        }
+        h4{
+            margin-bottom:5% ;
+        }
+</style>
+
     </style>
 </head>
 <body>
 
-    <h1>Image Capture and Prediction</h1>
+    <h1>Plant Recommendation</h1>
 
-    <form id="uploadForm" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" id="file">
-        <button type="button" id="uploadButton">Submit</button>S
-    </form>
+    <div id="form">
+        <h4>Submit an image of the area</h4>
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+            <label for="file" class="custom-file-upload">Choose File</label>
+            <input type="file" name="file" id="file">
+            <button type="button" id="uploadButton">Submit</button>
+        </form>
 
-    <div id="prediction-result"></div>
-
-    <div class="video-container">
-        <video id="video" autoplay></video>
-        <canvas id="canvas" style="display: none;"></canvas>
+        <div id="prediction-result-form"></div>
     </div>
 
-    <div class="controls">
-        <button id="capture-btn">Capture</button>
-        <button id="new-btn" style="display: none;">New</button>
-        <button id="submit-btn">Submit</button>
-    </div>
+    <div id="cam-Container">
+        <h4>Capture an image of the suitables area</h4>
+        <div class="video-container">
+            <video id="video" autoplay></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+        </div>
 
-    <h3 id="prediction-result"></h3>
+        <div class="controls">
+            <button id="capture-btn">Capture</button>
+            <button id="new-btn" style="display: none;">New Image</button>
+            <button id="submit-btn">Submit</button>
+        </div>
+
+        <h3 id="prediction-result-cam"></h3>
+    </div>    
+
+    <!--<div>
+        <p>location input</p>
+    </div> -->
 
     <script>
         const video = document.getElementById("video");
@@ -70,7 +139,9 @@
         const captureButton = document.getElementById("capture-btn");
         const newButton = document.getElementById("new-btn");
         const submitButton = document.getElementById("submit-btn");
-        const predictionResult = document.getElementById("prediction-result");
+        const predictionResultCam = document.getElementById("prediction-result-cam");
+        const predictionResultForm = document.getElementById("prediction-result-form");
+
 
         const ctx = canvas.getContext("2d");
 
@@ -120,7 +191,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    predictionResult.innerText = `Prediction: ${data.prediction}`;
+                    predictionResultCam.innerText = `Prediction: ${data.prediction}`;
                 })
                 .catch(error => console.error("Error:", error));
             }, "image/png");
@@ -128,7 +199,6 @@
 
         document.getElementById("uploadButton").addEventListener("click", () => {
         const fileInput = document.getElementById("file");
-        const predictionResult = document.getElementById("prediction-result");
         const formData = new FormData();
         formData.append("file", fileInput.files[0]);
 
@@ -138,7 +208,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            predictionResult.innerText = `Prediction: ${data.prediction}`;
+            predictionResultForm.innerText = `Prediction: ${data.prediction}`;
         })
         .catch(error => console.error("Error:", error));
     });
