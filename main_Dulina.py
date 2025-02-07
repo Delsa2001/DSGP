@@ -19,7 +19,7 @@ def upload_image():
 
             return jsonify({
                 "prediction": prediction,
-                "confidence": confidence_score  # Now safely wrapped in JSON
+                "confidence": confidence_score  
             })
     
     return render_template('page.html')

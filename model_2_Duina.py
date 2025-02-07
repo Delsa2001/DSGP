@@ -13,22 +13,25 @@ def preprocess(image_path):
     image_array = preprocess_input(image_array)
     return image_array
 
-def predict(image_path, model):
+def predict(image_path, model, threshold = 0.2):
     preprocessed_image = preprocess(image_path)
-    prediction = model.predict(preprocessed_image)
+    prediction = model.predict(preprocessed_image)[0][0]
     
 
 
-    if prediction[0]>0.5:
-        predicted_class =  "This is a Indoor space"
+    if prediction < (0.5 - threshold):
+        predicted_class =  "This is a Balcony space"
+    elif prediction > (0.5 + threshold):
+        predicted_class =  "This is Indoor space"
     else:
-        predicted_class =  "This is Balcony space"
-    
+        predicted_class = "None"
+ 
 
     confidence_score = float(np.max(prediction)) 
 
 
-    return predicted_class, round(confidence_score * 100, 2)
+    return predicted_class, confidence_score
+
 
 
 

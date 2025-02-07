@@ -1,25 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <style>
-        .video_container{
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-        }
-        #video {
-            width: 100%;
-
-        }
-        #image-preview {
-            position: relative;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-    </style>
+    
 </head>
 <body>
     
@@ -34,6 +16,9 @@
     </div>
 
     <button id="capture">Capture Photo</button>
+    <a id="download-link" href="#" style="display:none;" download="captured-image.png">
+        <button>Download Image</button>
+    </a>
 
 
     <script>
@@ -41,6 +26,7 @@
         const canvas = document.getElementById('image-preview');
         const capture_button = document.getElementById('capture');
         const image_context = canvas.getContext('2d');
+        const download_link = document.getElementById('download-link');
         
         if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
             navigator.mediaDevices.getUserMedia({video:true})
@@ -55,9 +41,9 @@
         capture_button.addEventListener('click', () => {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            image_context.drawImage(video, 0,0,canvas.width, canvas.heigh);
+            image_context.drawImage(video, 0,0,canvas.width, canvas.height);
 
-            //Canvas.style.display = 'block'; 
+
         });
 
 
