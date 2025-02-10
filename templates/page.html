@@ -70,23 +70,21 @@
         }
 
         .custom-file-upload {
-        padding: 10px 15px;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        background-color: #4CAF50;
-        color: white;
-        cursor: pointer;
-        display: inline-block;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            display: inline-block;
         }
 
 
         .custom-file-upload:hover {
             background-color: #45a049;
         }
-        #file {
-        display: none;
-        }
+
 
         h1{
             margin-bottom: 10%;
@@ -105,7 +103,6 @@
     <div id="form">
         <h4>Submit an image of the area</h4>
         <form id="uploadForm" method="post" enctype="multipart/form-data">
-            <label for="file" class="custom-file-upload">Choose File</label>
             <input type="file" name="file" id="file">
             <button type="button" id="uploadButton">Submit</button>
         </form>
@@ -114,7 +111,7 @@
     </div>
 
     <div id="cam-Container">
-        <h4>Capture an image of the suitables area</h4>
+        <h4>Capture an Image of the Suitable Area</h4>
         <div class="video-container">
             <video id="video" autoplay></video>
             <canvas id="canvas" style="display: none;"></canvas>
