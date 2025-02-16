@@ -4,108 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Capture</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            height: 100vh;
-            background-color: #f4f4f9;
-        }
-        .video-container {
-            position: relative;
-            width: 50%;
-            margin: auto;
-        }
-        video, canvas {
-            width: 100%;
-            max-width: 500px;
-            border: 2px solid black;
-            display: block;
-        }
-        .controls {
-            margin-top: 10px;
-        }
-        button {
-            padding: 10px 15px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-        #submit-btn {
-            display: none;
-        }
-        #cam-Container{
-            width: 50%;
-            float: left;
-            margin-bottom: 20%;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-left: 5%;
+    <link rel="stylesheet" href="static\style.css">
 
-        }
-
-        #form{
-            width: 30%;
-            float: right;
-            margin-bottom: 20%;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-right: 5%;
-
-        }
-
-        .custom-file-upload {
-        padding: 10px 15px;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        background-color: #4CAF50;
-        color: white;
-        cursor: pointer;
-        display: inline-block;
-        }
-
-
-        .custom-file-upload:hover {
-            background-color: #45a049;
-        }
-        #file {
-        display: none;
-        }
-
-        h1{
-            margin-bottom: 10%;
-        }
-        h4{
-            margin-bottom:5% ;
-        }
-</style>
-
-    </style>
+    
 </head>
 <body>
+
+    <nav class = "navBar">
+        <a href="#" id="name">Name</a>
+        <a href="#" id="component1">Predict</a>
+        <a href="#" id="component2">Disease Identification</a>
+        <a href="#" id="component3">ChatBot</a>
+    </nav>
 
     <h1>Plant Recommendation</h1>
 
     <div id="form">
         <h4>Submit an image of the area</h4>
         <form id="uploadForm" method="post" enctype="multipart/form-data">
-            <label for="file" class="custom-file-upload">Choose File</label>
             <input type="file" name="file" id="file">
             <button type="button" id="uploadButton">Submit</button>
         </form>
@@ -114,7 +30,7 @@
     </div>
 
     <div id="cam-Container">
-        <h4>Capture an image of the suitables area</h4>
+        <h4>Capture an Image of the Suitable Area</h4>
         <div class="video-container">
             <video id="video" autoplay></video>
             <canvas id="canvas" style="display: none;"></canvas>
@@ -185,7 +101,7 @@
                 const formData = new FormData();
                 formData.append("file", blob, "captured-image.png");
 
-                fetch("/", {
+                fetch("/predict", {
                     method: "POST",
                     body: formData
                 })
@@ -202,7 +118,7 @@
         const formData = new FormData();
         formData.append("file", fileInput.files[0]);
 
-        fetch("/", {
+        fetch("/predict", {
             method: "POST",
             body: formData
         })
