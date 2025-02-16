@@ -8,7 +8,7 @@ app.config['UPLOAD_FOLDER'] = './uploads'
 
 class_labels = ["balcony", "indoor"]
 
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/predict', methods = ['GET', 'POST'])
 def upload_image():
     if request.method == 'POST':
         file = request.files.get('file')
@@ -17,7 +17,7 @@ def upload_image():
             file.save(file_path)
             prediction, confidence_score = predict(file_path, model)
 
-            return jsonify({"prediction": prediction})
+            return jsonify({"prediction": prediction}) 
 
     
     return render_template('page.html')
