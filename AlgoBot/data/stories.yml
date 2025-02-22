@@ -11,4 +11,9 @@ stories:
 - story: plant disease query
   steps:
   - intent: ask_plant_disease
-  - action: action_get_plant_info  # ✅ Now part of a valid story
+  - action: action_get_plant_info
+
+- story: planting technique query
+  steps:
+  - intent: ask_planting_techniques
+  - action: action_get_planting_techniques

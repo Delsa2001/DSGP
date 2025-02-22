@@ -14,4 +14,9 @@ rules:
 - rule: Answer plant disease queries
   steps:
   - intent: ask_plant_disease
-  - action: action_get_plant_info  # ✅ Ensures action is triggered
+  - action: action_get_plant_info
+
+- rule: Answer planting technique queries
+  steps:
+  - intent: ask_planting_techniques
+  - action: action_get_planting_techniques

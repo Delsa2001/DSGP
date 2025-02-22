@@ -96,3 +96,11 @@ nlu:
     - What does [Cercospora Leaf Spot](disease_name) look like?
     - How can I prevent [Botrytis (Gray Mold)](disease_name)?
     - Do you have details on [Black Spot](disease_name)?
+
+- intent: ask_planting_techniques
+  examples: |
+    - How do I grow [Tomato](plant_name)?
+    - What are the best conditions for [Lettuce](plant_name)?
+    - Tell me how to plant [Carrot](plant_name).
+    - What is the soil type required for [Basil](plant_name)?
+    - How much water does [Cucumber](plant_name) need?
