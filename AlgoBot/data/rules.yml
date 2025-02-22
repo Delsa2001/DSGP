@@ -1,7 +1,6 @@
 version: "3.1"
 
 rules:
-
 - rule: Say goodbye anytime the user says goodbye
   steps:
   - intent: goodbye
@@ -11,3 +10,8 @@ rules:
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
+
+- rule: Answer plant disease queries
+  steps:
+  - intent: ask_plant_disease
+  - action: action_get_plant_info  # ✅ Ensures action is triggered

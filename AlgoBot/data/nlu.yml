@@ -9,7 +9,6 @@ nlu:
     - hello there
     - good morning
     - good evening
-    - moin
     - hey there
     - let's go
     - hey dude
@@ -21,14 +20,13 @@ nlu:
   examples: |
     - cu
     - good by
-    - cee you later
+    - see you later
     - good night
     - bye
     - goodbye
     - have a nice day
     - see you around
     - bye bye
-    - see you later
 
 - intent: affirm
   examples: |
@@ -63,8 +61,6 @@ nlu:
     - super stoked
     - extremely good
     - so so perfect
-    - so good
-    - so perfect
 
 - intent: mood_unhappy
   examples: |
@@ -79,9 +75,6 @@ nlu:
     - unhappy
     - not good
     - not very good
-    - extremly sad
-    - so saad
-    - so sad
 
 - intent: bot_challenge
   examples: |
@@ -89,3 +82,17 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+- intent: ask_plant_disease  # ✅ Intent for plant disease queries
+  examples: |
+    - Tell me about [Powdery Mildew](disease_name)
+    - What are the symptoms of [Rust](disease_name)?
+    - How do I treat [Leaf Spot](disease_name)?
+    - What is [Blight](disease_name)?
+    - Can you help me with [Anthracnose](disease_name)?
+    - I need information about [Black Spot](disease_name).
+    - What should I do for [Canker](disease_name)?
+    - What causes [Downy Mildew](disease_name)?
+    - What does [Cercospora Leaf Spot](disease_name) look like?
+    - How can I prevent [Botrytis (Gray Mold)](disease_name)?
+    - Do you have details on [Black Spot](disease_name)?

@@ -8,6 +8,18 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
+  - ask_plant_disease  # ✅ Intent for plant disease queries
+
+entities:
+  - disease_name  # ✅ Now defined properly
+
+slots:
+  disease_name:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: disease_name
 
 responses:
   utter_greet:
@@ -28,6 +40,9 @@ responses:
 
   utter_iamabot:
   - text: "I am a bot, powered by Rasa."
+
+actions:
+  - action_get_plant_info  # ✅ Register the custom action
 
 session_config:
   session_expiration_time: 60
