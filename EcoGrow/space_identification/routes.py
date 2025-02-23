@@ -1,6 +1,6 @@
 from flask import request, render_template, jsonify
 from . import space_identification_bp  
-from components.model_2_Duina import predict, model
+from space_identification.components.model_2_Dulina import predict,preprocess, model
 import os
 
 @space_identification_bp.route('/', methods=['GET', 'POST'])
