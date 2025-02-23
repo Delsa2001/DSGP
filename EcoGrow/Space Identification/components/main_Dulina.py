@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template,jsonify
-from model_2_Duina import predict, preprocess,model
+from components.model_2_Duina import predict, preprocess,model
 import numpy as np
 import os
 
