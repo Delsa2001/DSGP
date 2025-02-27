@@ -8,3 +8,6 @@ app.register_blueprint(space_identification_bp, url_prefix='/space_identificatio
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
