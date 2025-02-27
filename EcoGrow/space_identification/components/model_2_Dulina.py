@@ -1,10 +1,10 @@
 
-from tensorflow.keras.models import load_model
-from tensorflow.keras.applications.vgg16 import preprocess_input
-from tensorflow.keras.utils import img_to_array, load_img
+from tensorflow.keras.models import load_model # type: ignore
+from tensorflow.keras.applications.vgg16 import preprocess_input # type: ignore
+from tensorflow.keras.utils import img_to_array, load_img # type: ignore
 import numpy as np
 
-model = load_model("balcony_identification_model.h5")
+model = load_model("C:/Users/dulin/DSGP/EcoGrow/space_identification/Models/balcony_identification_model.h5")
 
 def preprocess(image_path):
     image = load_img(image_path, target_size=(128,128))
@@ -16,7 +16,6 @@ def preprocess(image_path):
 def predict(image_path, model, threshold = 0.2):
     preprocessed_image = preprocess(image_path)
     prediction = model.predict(preprocessed_image)[0][0]
-    
 
 
     if prediction < (0.5 - threshold):

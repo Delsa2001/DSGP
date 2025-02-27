@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template,jsonify
-from model_2_Duina import predict, preprocess,model
+from EcoGrow.space_identification.components.model_2_Dulina import predict, preprocess,model
 import numpy as np
 import os
 
@@ -25,4 +25,6 @@ def upload_image():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+    
 

@@ -43,7 +43,7 @@ button {
 #cam-Container{
     width: 50%;
     float: left;
-    margin-bottom: 20%;
+
     background: #ffffff;
     padding: 20px;
     border-radius: 10px;
@@ -110,11 +110,17 @@ h4{
 
 #name{
     float: left;
-
-
+    margin-left: 2%;
+    font-size: 20px;
 }
 
 .navBar a:hover {
     background-color: #ddd;
     color: black;
+}
+
+#nextButton {
+    clear: both;
+    text-align: center;
+    margin-top: 10px;
 }

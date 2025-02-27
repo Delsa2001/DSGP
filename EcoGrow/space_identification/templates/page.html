@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+    <link rel="stylesheet" href="static\style.css">
+
+    
+</head>
+<body>
+
+    <nav class = "navBar">
+        <a href="#" id="name">EcoGrow</a>
+        <a href="#" id="component4">About</a>
+        <a href="#" id="component3">ChatBot</a>
+        <a href="#" id="component2">Disease Identification</a>
+        <a href="#" id="component1">Predict</a>
+    </nav>
+
+    <h1>Plant Recommendation</h1>
+
+    <div id="container">
+        <div id="cam-Container">
+            <h4>Capture an Image of the Suitable Area</h4>
+            <div class="video-container">
+                <video id="video" autoplay></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+            </div>
+    
+            <div class="controls">
+                <button id="capture-btn">Capture</button>
+                <button id="new-btn" style="display: none;">New Image</button>
+                <button id="submit-btn">Submit</button>
+            </div>
+    
+            <h3 id="prediction-result-cam"></h3>
+        </div>    
+    
+        <div id="form">
+            <h4>Submit an image of the area</h4>
+            <form id="uploadForm" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="file">
+                <button type="button" id="uploadButton">Submit</button>
+            </form>
+    
+            <div id="prediction-result-form"></div>
+        </div>
+    </div>
+    
+    <div id="nextButton">
+        <button id="nextButton">Next</button>
+    </div> 
+    
+    <script src="static\script.js"></script>
+
+</body>
+</html>
