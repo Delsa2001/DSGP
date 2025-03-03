@@ -17,3 +17,10 @@ nohup rasa run --enable-api --cors "*" &
 
 # Start Flask application
 nohup python app.py &
+
+
+#Commands
+#rasa run actions
+#rasa run --enable-api
+#cd Backend
+ #flask run
