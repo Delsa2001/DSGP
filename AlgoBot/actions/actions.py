@@ -31,7 +31,7 @@ class ActionGetPlantInfo(Action):
                 f"🌿 **{best_match[0]}** 🌿\n"
                 f"📌 *Description:* {best_match[1]}\n"
                 f"⚠️ *Symptoms:* {best_match[2]}\n"
-                f"💊 *Treatment:* {best_match[3]}\n"
+                f"💊 *Treatments:* {best_match[3]}\n"
                 "\n✅ Hope this helps! Let me know if you need more details."
             )
         else:
