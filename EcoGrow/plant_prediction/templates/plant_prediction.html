@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Prediction</title>
+    <link rel="stylesheet" href="static\style.css">
+
+
+</head>
+
+<body>
+    <div class="container">
+        <h2>Plant Prediction Model</h2>
+
+        <form action="/plant_prediction/predict" method="post">
+            <label for="Temperature">Temperature:</label>
+            <input type="number" name="Temperature" step="any" required>
+
+            <label for="Precipitation">Precipitation:</label>
+            <input type="number" name="Precipitation" step="any" required>
+
+            <label for="Humidity">Humidity:</label>
+            <input type="number" name="Humidity" step="any" required>
+
+            <label for="Location">Location (Numeric ID):</label>
+            <input type="number" name="Location" required>
+
+            <label for="Place">Place (Numeric ID):</label>
+            <input type="number" name="Place" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+        <p class="prediction">Prediction: {{ prediction }}</p>
+        {% endif %}
+    </div>
+</body>
+
+</html>
