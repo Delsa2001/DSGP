@@ -50,7 +50,7 @@ submitButton.addEventListener("click", () => {
         const formData = new FormData();
         formData.append("file", blob, "captured-image.png");
 
-        fetch("/predict", {
+        fetch("/space_identification/", {
             method: "POST",
             body: formData
         })
@@ -67,7 +67,7 @@ const fileInput = document.getElementById("file");
 const formData = new FormData();
 formData.append("file", fileInput.files[0]);
 
-fetch("/predict", {
+fetch("/space_identification/", {
     method: "POST",
     body: formData
 })
@@ -77,3 +77,17 @@ fetch("/predict", {
 })
 .catch(error => console.error("Error:", error));
 });
+
+
+function validation(){
+
+    const imageCaptured = ctx && ctx.getImageData(0, 0, canvas.width, canvas.height).data.some(channel => channel !== 0);
+    const fileInput = document.getElementById("file");
+    const fileuploaded =  fileInput && fileInput.files.length > 0;
+
+    if (imageCaptured || fileuploaded ){
+        window.location.href= "/plant_prediction/"
+    }else{
+        alert("Please input an image to continue")
+    }
+}
