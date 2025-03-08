@@ -1,4 +1,4 @@
-from flask import request, render_template, jsonify
+from flask import request, render_template, jsonify,session
 from . import space_identification_bp  
 from space_identification.components.model_2_Dulina import predict,preprocess, model
 import os
@@ -11,6 +11,9 @@ def upload_image():
             file_path = os.path.join('./uploads', file.filename)  
             file.save(file_path)
             prediction, confidence_score = predict(file_path, model)
+
+            session["prediction_result"] = prediction
+            
             return jsonify({"prediction": prediction}) 
 
     return render_template('page.html')
