@@ -86,7 +86,32 @@ function validation(){
     const fileuploaded =  fileInput && fileInput.files.length > 0;
 
     if (imageCaptured || fileuploaded ){
-        window.location.href= "/plant_prediction/"
+        const predictionResultCam = document.getElementById("prediction-result-cam")?.innerText.trim();
+        const predictionResultForm = document.getElementById("prediction-result-form")?.innerText.trim();
+
+        let result = ""
+        
+        if (predictionResultCam == null){
+            result = predictionResultForm
+        } else{
+            result = predictionResultCam
+        }
+
+        fetch("/space_identification/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ result: result })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = "/plant_prediction";  
+            } else {
+                alert("Failed to store prediction.");
+            }
+        })
+        
+
     }else{
         alert("Please input an image to continue")
     }

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, Blueprint
+from flask import Flask, request, jsonify, render_template, Blueprint,session
 from . import plant_prediction_bp
 import joblib
 import numpy as np
@@ -38,6 +38,7 @@ def predict():
         return jsonify({"error": "Model not loaded. Check 'plant_prediction_model.pkl'."})
 
     try:
+        place = session.get("prediction_result", "No prediction made")
         # Get user input from form
         feature1 = float(request.form.get("Temperature", 0))
         feature2 = float(request.form.get("Precipitation", 0))
@@ -52,7 +53,7 @@ def predict():
         # Make a prediction
         prediction = model.predict(features)[0]
 
-        return render_template("plant_prediction.html", prediction=prediction)
+        return render_template("plant_prediction.html", prediction=prediction, place = place)
 
     except Exception as e:
         return jsonify({"error": str(e)})
