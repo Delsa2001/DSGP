@@ -4,4 +4,5 @@ requests
 rasa-sdk
 sentence-transformers
 rasa
+python-dotenv
 sqlite3
