@@ -12,9 +12,18 @@ def upload_image():
             file.save(file_path)
             prediction, confidence_score = predict(file_path, model)
 
-            session["prediction_result"] = prediction
+            session["space_result"] = prediction
             
             return jsonify({"prediction": prediction}) 
 
     return render_template('page.html')
 
+@space_identification_bp.route('/store_result', methods=['POST'])
+def store_result():
+    data = request.json
+    if not data or 'result' not in data:
+        return jsonify({'success': False, 'error': 'Invalid data received'}), 400
+
+    session['space_result'] = data['result'] 
+    print("Stored in session:", session['space_result'])  
+    return jsonify({'success': True})

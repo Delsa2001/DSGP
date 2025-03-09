@@ -89,20 +89,30 @@ function validation(){
         const predictionResultCam = document.getElementById("prediction-result-cam")?.innerText.trim();
         const predictionResultForm = document.getElementById("prediction-result-form")?.innerText.trim();
 
-        let result = ""
+        let result = predictionResultForm || predictionResultCam;
+        result = result.replace("Prediction: ", "").trim();
+
         
-        if (predictionResultCam == null){
-            result = predictionResultForm
-        } else{
-            result = predictionResultCam
+       // if (predictionResultCam && predictionResultCam !== "") {
+       //     result = predictionResultCam;
+       // } else if (predictionResultForm && predictionResultForm !== "") {
+       //     result = predictionResultForm;
+       // } 
+
+        if (!result) {
+            alert("Prediction not found. Please try again.");
+            return;
         }
 
-        fetch("/space_identification/", {
+        fetch("/space_identification/store_result", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ result: result })
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log("Response status:", response.status); // Debug
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 window.location.href = "/plant_prediction";  
@@ -110,7 +120,7 @@ function validation(){
                 alert("Failed to store prediction.");
             }
         })
-        
+
 
     }else{
         alert("Please input an image to continue")
