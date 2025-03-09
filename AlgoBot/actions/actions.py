@@ -28,14 +28,13 @@ class ActionGetPlantInfo(Action):
 
         if best_match and highest_score > 0.5:
             response = (
-                f"🌿 **{best_match[0]}** 🌿\n"
-                f"📌 *Description:* {best_match[1]}\n"
-                f"⚠️ *Symptoms:* {best_match[2]}\n"
-                f"💊 *Treatments:* {best_match[3]}\n"
-                "\n✅ Hope this helps! Let me know if you need more details."
+                f"**__{best_match[0]}__**\n\n"
+                f"**Description:** {best_match[1]}\n\n"
+                f"**Symptoms:** {best_match[2]}\n\n"
+                f"**Treatments:** {best_match[3]}"
             )
         else:
-            response = "❌ *Sorry, I couldn't find any exact match.*\n💡 Try rephrasing your question or ask about another plant disease."
+            response = "Sorry, I couldn't find any exact match. Try rephrasing your question or ask about another plant disease."
 
         dispatcher.utter_message(text=response)
         return []
@@ -63,15 +62,14 @@ class ActionGetPlantingTechniques(Action):
 
         if best_match and highest_score > 0.5:
             response = (
-                f"🌱 **{best_match[0]} Planting Guide** 🌱\n"
-                f"☀️ *Light:* {best_match[1]}\n"
-                f"💧 *Watering:* {best_match[2]}\n"
-                f"🌱 *Soil:* {best_match[3]}\n"
-                f"📖 *Care:* {best_match[4]}\n"
-                "\n✅ Hope this helps! Let me know if you need more details."
+                f"**__{best_match[0]} Planting Guide__**\n\n"
+                f"**Light Requirement:** {best_match[1]}\n\n"
+                f"**Watering:** {best_match[2]}\n\n"
+                f"**Soil Type:** {best_match[3]}\n\n"
+                f"**Care Instructions:** {best_match[4]}"
             )
         else:
-            response = "❌ *Sorry, I couldn't find planting instructions for that plant.*\n💡 Try asking about another plant!"
+            response = "Sorry, I couldn't find planting instructions for that plant. Try asking about another plant."
 
         dispatcher.utter_message(text=response)
         return []
