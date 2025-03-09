@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plant Helper Chatbot</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -120,7 +121,10 @@
             const chatBox = document.getElementById("chat-box");
             const messageDiv = document.createElement("div");
             messageDiv.classList.add("chat-bubble", sender === "user" ? "user-message" : "bot-message");
-            messageDiv.textContent = text;
+
+            // Use Marked.js to render Markdown properly
+            messageDiv.innerHTML = marked.parse(text);
+
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
