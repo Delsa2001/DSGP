@@ -38,13 +38,17 @@ def predict():
         return jsonify({"error": "Model not loaded. Check 'plant_prediction_model.pkl'."})
 
     try:
-        place = session.get("prediction_result", "No prediction made")
+        space_result = session.get("space_result", "Not set")
+        print("Space result from session:", space_result)
+        
         # Get user input from form
         feature1 = float(request.form.get("Temperature", 0))
         feature2 = float(request.form.get("Precipitation", 0))
         feature3 = float(request.form.get("Humidity", 0))
         feature4 = float(request.form.get("Location", 0))
-        feature5 = float(request.form.get("Place", 0))
+
+        place_mapping = {"balcony": 1, "indoor": 0, "Not set": -1}  
+        feature5 = place_mapping.get(space_result, -1)
 
         # Convert to NumPy array (adjust shape for your model)
         features = np.array(
@@ -53,7 +57,7 @@ def predict():
         # Make a prediction
         prediction = model.predict(features)[0]
 
-        return render_template("plant_prediction.html", prediction=prediction, place = place)
+        return render_template("plant_prediction.html", prediction=prediction, place = space_result)
 
     except Exception as e:
         return jsonify({"error": str(e)})
