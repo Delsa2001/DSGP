@@ -28,7 +28,7 @@ class ActionGetPlantInfo(Action):
 
         if best_match and highest_score > 0.5:
             response = (
-                f"**__{best_match[0]}__**\n\n"
+                f"**{best_match[0]}**\n\n"
                 f"**Description:** {best_match[1]}\n\n"
                 f"**Symptoms:** {best_match[2]}\n\n"
                 f"**Treatments:** {best_match[3]}"
@@ -62,7 +62,7 @@ class ActionGetPlantingTechniques(Action):
 
         if best_match and highest_score > 0.5:
             response = (
-                f"**__{best_match[0]} Planting Guide__**\n\n"
+                f"**{best_match[0]} Planting Guide**\n\n"
                 f"**Light Requirement:** {best_match[1]}\n\n"
                 f"**Watering:** {best_match[2]}\n\n"
                 f"**Soil Type:** {best_match[3]}\n\n"
