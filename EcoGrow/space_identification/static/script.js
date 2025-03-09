@@ -99,6 +99,8 @@ function validation(){
        //     result = predictionResultForm;
        // } 
 
+       result = result.toLowerCase().includes("balcony") ? "Balcony" : result.toLowerCase().includes("indoor") ? "Indoor" : result;
+
         if (!result) {
             alert("Prediction not found. Please try again.");
             return;

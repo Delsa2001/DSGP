@@ -29,7 +29,8 @@ else:
 
 @plant_prediction_bp.route("/")
 def home():
-    return render_template("plant_prediction.html")
+    space_result = session.get("space_result", "Not set")
+    return render_template("plant_prediction.html", place=space_result)
 
 
 @plant_prediction_bp.route("/predict", methods=["POST", "GET"])
