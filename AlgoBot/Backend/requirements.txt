@@ -1,0 +1,7 @@
+Flask
+Flask-Cors
+requests
+rasa-sdk
+sentence-transformers
+rasa
+sqlite3
