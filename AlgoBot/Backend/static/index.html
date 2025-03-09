@@ -105,8 +105,10 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.response) {
-                    data.response.forEach(text => appendMessage("bot", text));
+                if (data.response && data.response.length > 0) {
+                    // Join multiple responses into a single message
+                    const combinedResponse = data.response.join("\n\n");
+                    appendMessage("bot", combinedResponse);
                 } else {
                     appendMessage("bot", "Sorry, something went wrong.");
                 }
