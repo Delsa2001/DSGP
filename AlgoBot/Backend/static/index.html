@@ -88,6 +88,8 @@
     </div>
 
     <script>
+        const API_URL = "http://127.0.0.1:5000"; // Local Flask API URL
+
         function sendMessage() {
             const userInput = document.getElementById("user-input");
             const message = userInput.value.trim();
@@ -96,7 +98,7 @@
             appendMessage("user", message);
             userInput.value = "";
 
-            fetch("http://127.0.0.1:5000/chat", {
+            fetch(`${API_URL}/chat`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -106,7 +108,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.response && data.response.length > 0) {
-                    // Join multiple responses into a single message
                     const combinedResponse = data.response.join("\n\n");
                     appendMessage("bot", combinedResponse);
                 } else {
@@ -124,7 +125,6 @@
             const messageDiv = document.createElement("div");
             messageDiv.classList.add("chat-bubble", sender === "user" ? "user-message" : "bot-message");
 
-            // Use Marked.js to render Markdown properly
             messageDiv.innerHTML = marked.parse(text);
 
             chatBox.appendChild(messageDiv);
