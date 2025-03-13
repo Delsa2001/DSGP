@@ -4,7 +4,7 @@ from tensorflow.keras.applications.vgg16 import preprocess_input # type: ignore
 from tensorflow.keras.utils import img_to_array, load_img # type: ignore
 import numpy as np
 
-model = load_model("C:/Users/dulin/DSGP/EcoGrow/space_identification/Models/balcony_identification_model.h5")
+model = load_model(r"EcoGrow\space_identification\Models\resnet50_balcony_model.h5")
 
 def preprocess(image_path):
     image = load_img(image_path, target_size=(128,128))
@@ -18,15 +18,16 @@ def predict(image_path, model, threshold = 0.2):
     prediction = model.predict(preprocessed_image)[0][0]
 
 
-    if prediction < (0.5 - threshold):
+    if prediction < (0.5 - 0.49) :
         predicted_class =  "This is a Balcony space"
     elif prediction > (0.5 + threshold):
         predicted_class =  "This is Indoor space"
     else:
-        predicted_class = "None"
+        predicted_class = "Not a Balcony or Indoor Space"
  
 
     confidence_score = float(np.max(prediction)) 
+    print(confidence_score)
 
 
     return predicted_class, confidence_score
