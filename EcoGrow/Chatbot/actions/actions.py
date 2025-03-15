@@ -3,10 +3,10 @@ import sqlite3
 from rasa_sdk import Action
 from sentence_transformers import SentenceTransformer, util
 
-# Load SBERT model for better query matching
-sbert_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+# ✅ Load SBERT from local storage instead of downloading it each time
+sbert_model = SentenceTransformer("./sbert_model")  # Uses locally stored model
 
-# Get the correct database paths
+# ✅ Get the correct database paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DISEASES_DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
 PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
@@ -19,15 +19,15 @@ class ActionGetPlantInfo(Action):
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get('text').strip().lower()
 
-        # Connect to the plant diseases database
+        # ✅ Connect to the plant diseases database
         conn = sqlite3.connect(DISEASES_DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT disease_name, description, symptoms, treatment FROM plant_diseases")
         diseases = cursor.fetchall()
         conn.close()
 
+        # ✅ Use SBERT to find the best-matching disease
         query_embedding = sbert_model.encode(user_query)
-
         best_match, highest_score = None, 0
         for disease in diseases:
             disease_embedding = sbert_model.encode(disease[0])
@@ -41,7 +41,7 @@ class ActionGetPlantInfo(Action):
             symptoms = best_match[2]
             treatment = best_match[3]
 
-            # Structured response for specific queries
+            # ✅ Structured response for specific queries
             if "symptoms" in user_query:
                 response = f"**{disease_name} Symptoms**\n\n{symptoms}"
             elif "treatment" in user_query or "cure" in user_query:
@@ -49,7 +49,7 @@ class ActionGetPlantInfo(Action):
             elif "description" in user_query:
                 response = f"**{disease_name} Description**\n\n{description}"
             else:
-                # Fully structured response for general queries
+                # ✅ Fully structured response for general queries
                 response = (
                     f"**{disease_name} Information**\n\n"
                     f"**Description:** {description}\n\n"
@@ -70,7 +70,7 @@ class ActionGetPlantingTechniques(Action):
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get('text').strip().lower()
 
-        # Connect to the planting techniques database
+        # ✅ Connect to the planting techniques database
         conn = sqlite3.connect(PLANTING_DB_PATH)
         cursor = conn.cursor()
         cursor.execute(
@@ -79,8 +79,8 @@ class ActionGetPlantingTechniques(Action):
         plants = cursor.fetchall()
         conn.close()
 
+        # ✅ Use SBERT to find the best-matching plant
         query_embedding = sbert_model.encode(user_query)
-
         best_match, highest_score = None, 0
         for plant in plants:
             plant_embedding = sbert_model.encode(plant[0])
@@ -95,7 +95,7 @@ class ActionGetPlantingTechniques(Action):
             soil_type = best_match[3]
             care_instructions = best_match[4]
 
-            # Structured response for specific queries
+            # ✅ Structured response for specific queries
             if "soil" in user_query:
                 response = f"**{plant_name} Soil Requirement**\n\nThe best soil type for {plant_name} is: {soil_type}"
             elif "water" in user_query or "watering" in user_query:
@@ -105,7 +105,7 @@ class ActionGetPlantingTechniques(Action):
             elif "care" in user_query:
                 response = f"**{plant_name} Care Instructions**\n\n{care_instructions}"
             else:
-                # Fully structured response for general queries
+                # ✅ Fully structured response for general queries
                 response = (
                     f"**{plant_name} Planting Guide**\n\n"
                     f"**Light Requirement:** {light_requirement}\n\n"
