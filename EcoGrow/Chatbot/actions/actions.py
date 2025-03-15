@@ -9,6 +9,7 @@ sbert_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 # Get the correct database path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
+PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
 
 
 class ActionGetPlantInfo(Action):
@@ -18,7 +19,6 @@ class ActionGetPlantInfo(Action):
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get('text').strip().lower()
 
-        # Connect using the correct path
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT disease_name, description, symptoms, treatment FROM plant_diseases")
@@ -35,14 +35,16 @@ class ActionGetPlantInfo(Action):
                 highest_score, best_match = similarity, disease
 
         if best_match and highest_score > 0.5:
-            response = (
-                f"**{best_match[0]}**\n\n"
-                f"**Description:** {best_match[1]}\n\n"
-                f"**Symptoms:** {best_match[2]}\n\n"
-                f"**Treatments:** {best_match[3]}"
-            )
+            if "symptoms" in user_query:
+                response = f"Symptoms of {best_match[0]}: {best_match[2]}"
+            elif "treatment" in user_query:
+                response = f"Treatment for {best_match[0]}: {best_match[3]}"
+            elif "description" in user_query:
+                response = f"Description of {best_match[0]}: {best_match[1]}"
+            else:
+                response = f"{best_match[0]} - {best_match[1]}\nSymptoms: {best_match[2]}\nTreatment: {best_match[3]}"
         else:
-            response = "Sorry, I couldn't find any exact match. Try rephrasing your question or ask about another plant disease."
+            response = "Sorry, I couldn't find any exact match."
 
         dispatcher.utter_message(text=response)
         return []
@@ -54,12 +56,12 @@ class ActionGetPlantingTechniques(Action):
 
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get('text').strip().lower()
-        PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
 
         conn = sqlite3.connect(PLANTING_DB_PATH)
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT plant_name, light_requirement, water_requirement, soil_type, care_instructions FROM planting_techniques")
+            "SELECT plant_name, light_requirement, water_requirement, soil_type, care_instructions FROM planting_techniques"
+        )
         plants = cursor.fetchall()
         conn.close()
 
@@ -73,15 +75,18 @@ class ActionGetPlantingTechniques(Action):
                 highest_score, best_match = similarity, plant
 
         if best_match and highest_score > 0.5:
-            response = (
-                f"**{best_match[0]} Planting Guide**\n\n"
-                f"**Light Requirement:** {best_match[1]}\n\n"
-                f"**Watering:** {best_match[2]}\n\n"
-                f"**Soil Type:** {best_match[3]}\n\n"
-                f"**Care Instructions:** {best_match[4]}"
-            )
+            if "soil" in user_query:
+                response = f"The best soil type for {best_match[0]} is: {best_match[3]}"
+            elif "water" in user_query or "watering" in user_query:
+                response = f"{best_match[0]} requires this amount of water: {best_match[2]}"
+            elif "light" in user_query:
+                response = f"{best_match[0]} grows best in this light condition: {best_match[1]}"
+            elif "care" in user_query:
+                response = f"Care instructions for {best_match[0]}: {best_match[4]}"
+            else:
+                response = f"{best_match[0]} requires {best_match[1]} light, {best_match[2]} water, and prefers {best_match[3]} soil."
         else:
-            response = "Sorry, I couldn't find planting instructions for that plant. Try asking about another plant."
+            response = "Sorry, I couldn't find planting instructions for that plant."
 
         dispatcher.utter_message(text=response)
         return []
