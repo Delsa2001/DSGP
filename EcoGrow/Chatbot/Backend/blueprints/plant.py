@@ -1,7 +1,7 @@
-from flask import Blueprint, request, jsonify
+import os
 import sqlite3
 import requests
-import os
+from flask import Blueprint, request, jsonify
 from dotenv import load_dotenv
 
 # Load API keys from .env file
@@ -11,12 +11,16 @@ plant_bp = Blueprint('plant', __name__)
 
 # External API URLs
 WIKIPEDIA_API = "https://en.wikipedia.org/api/rest_v1/page/summary/"
-TREFLE_API_TOKEN = os.getenv("TREFLE_API_KEY")  # Securely load the API key
+TREFLE_API_TOKEN = os.getenv("TREFLE_API_KEY")
 TREFLE_API_PLANT = f"https://trefle.io/api/v1/plants/search?token={TREFLE_API_TOKEN}&q="
 
-def fetch_from_db(query, param):
+# Get the correct database paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DISEASES_DB_PATH = os.path.join(BASE_DIR, "..", "actions", "plant_diseases.db")
+PLANTING_DB_PATH = os.path.join(BASE_DIR, "..", "actions", "planting_techniques.db")
+
+def fetch_from_db(db_path, query, param):
     """Helper function to fetch data from SQLite"""
-    db_path = "data/plant_diseases.db" if "disease" in query else "data/planting_techniques.db"
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute(query, (param,))
@@ -28,8 +32,8 @@ def fetch_from_external_api(query, is_disease=True):
     """Fetch data from an external source if not found in the database"""
     api_url = WIKIPEDIA_API + query if is_disease else TREFLE_API_PLANT + query
     try:
-        response = requests.get(api_url, timeout=5)  # Set timeout to prevent hanging requests
-        response.raise_for_status()  # Raise exception for HTTP errors (e.g., 404, 500)
+        response = requests.get(api_url, timeout=5)
+        response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f"Error fetching from API: {e}")
@@ -42,6 +46,7 @@ def get_plant_disease():
         return jsonify({"error": "Disease name is required"}), 400
 
     disease = fetch_from_db(
+        DISEASES_DB_PATH,
         "SELECT disease_name, description, symptoms, treatment FROM plant_diseases WHERE LOWER(disease_name) = ?",
         disease_name
     )
@@ -72,6 +77,7 @@ def get_planting_techniques():
         return jsonify({"error": "Plant name is required"}), 400
 
     plant = fetch_from_db(
+        PLANTING_DB_PATH,
         "SELECT plant_name, light_requirement, water_requirement, soil_type, care_instructions FROM planting_techniques WHERE LOWER(plant_name) = ?",
         plant_name
     )
