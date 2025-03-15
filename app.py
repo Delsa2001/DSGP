@@ -13,6 +13,9 @@ model = load_model(MODEL_PATH)
 # Class labels
 CLASS_LABELS = {0: 'Healthy', 1: 'Powdery', 2: 'Rust'}
 
+# Confidence threshold (you can tweak this value)
+CONFIDENCE_THRESHOLD = 0.7  # 70%
+
 # Preprocess image
 def preprocess_image(image_path, target_size=(225, 225)):
     img = load_img(image_path, target_size=target_size)
@@ -35,13 +38,22 @@ def predict():
     image_file.save(temp_image_path)
 
     try:
+        # Preprocess and predict
         image = preprocess_image(temp_image_path)
         predictions = model.predict(image)
+        
+        # Get the highest probability and its class
+        highest_prob = np.max(predictions[0])
         predicted_class = np.argmax(predictions[0])
         predicted_label = CLASS_LABELS[predicted_class]
 
         os.remove(temp_image_path)
 
+        # Check if the confidence is below threshold
+        if highest_prob < CONFIDENCE_THRESHOLD:
+            return jsonify({"error": "Please upload a clear leaf image."}), 400
+        
+        # Return prediction if above threshold
         return jsonify({
             "predicted_label": predicted_label,
             "probabilities": {
@@ -55,4 +67,3 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
