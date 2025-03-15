@@ -3,12 +3,12 @@ import sqlite3
 from rasa_sdk import Action
 from sentence_transformers import SentenceTransformer, util
 
-# Load SBERT model
+# Load SBERT model for better query matching
 sbert_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
-# Get the correct database path
+# Get the correct database paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
+DISEASES_DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
 PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
 
 
@@ -19,7 +19,8 @@ class ActionGetPlantInfo(Action):
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get('text').strip().lower()
 
-        conn = sqlite3.connect(DB_PATH)
+        # Connect to the plant diseases database
+        conn = sqlite3.connect(DISEASES_DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT disease_name, description, symptoms, treatment FROM plant_diseases")
         diseases = cursor.fetchall()
@@ -35,16 +36,28 @@ class ActionGetPlantInfo(Action):
                 highest_score, best_match = similarity, disease
 
         if best_match and highest_score > 0.5:
+            disease_name = best_match[0]
+            description = best_match[1]
+            symptoms = best_match[2]
+            treatment = best_match[3]
+
+            # Structured response for specific queries
             if "symptoms" in user_query:
-                response = f"Symptoms of {best_match[0]}: {best_match[2]}"
-            elif "treatment" in user_query:
-                response = f"Treatment for {best_match[0]}: {best_match[3]}"
+                response = f"**{disease_name} Symptoms**\n\n{symptoms}"
+            elif "treatment" in user_query or "cure" in user_query:
+                response = f"**{disease_name} Treatment**\n\n{treatment}"
             elif "description" in user_query:
-                response = f"Description of {best_match[0]}: {best_match[1]}"
+                response = f"**{disease_name} Description**\n\n{description}"
             else:
-                response = f"{best_match[0]} - {best_match[1]}\nSymptoms: {best_match[2]}\nTreatment: {best_match[3]}"
+                # Fully structured response for general queries
+                response = (
+                    f"**{disease_name} Information**\n\n"
+                    f"**Description:** {description}\n\n"
+                    f"**Symptoms:** {symptoms}\n\n"
+                    f"**Treatment:** {treatment}"
+                )
         else:
-            response = "Sorry, I couldn't find any exact match."
+            response = "Sorry, I couldn't find any exact match for the disease."
 
         dispatcher.utter_message(text=response)
         return []
@@ -57,6 +70,7 @@ class ActionGetPlantingTechniques(Action):
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get('text').strip().lower()
 
+        # Connect to the planting techniques database
         conn = sqlite3.connect(PLANTING_DB_PATH)
         cursor = conn.cursor()
         cursor.execute(
@@ -75,16 +89,30 @@ class ActionGetPlantingTechniques(Action):
                 highest_score, best_match = similarity, plant
 
         if best_match and highest_score > 0.5:
+            plant_name = best_match[0]
+            light_requirement = best_match[1]
+            water_requirement = best_match[2]
+            soil_type = best_match[3]
+            care_instructions = best_match[4]
+
+            # Structured response for specific queries
             if "soil" in user_query:
-                response = f"The best soil type for {best_match[0]} is: {best_match[3]}"
+                response = f"**{plant_name} Soil Requirement**\n\nThe best soil type for {plant_name} is: {soil_type}"
             elif "water" in user_query or "watering" in user_query:
-                response = f"{best_match[0]} requires this amount of water: {best_match[2]}"
+                response = f"**{plant_name} Watering Needs**\n\n{plant_name} requires this amount of water: {water_requirement}"
             elif "light" in user_query:
-                response = f"{best_match[0]} grows best in this light condition: {best_match[1]}"
+                response = f"**{plant_name} Light Requirement**\n\n{plant_name} grows best in this light condition: {light_requirement}"
             elif "care" in user_query:
-                response = f"Care instructions for {best_match[0]}: {best_match[4]}"
+                response = f"**{plant_name} Care Instructions**\n\n{care_instructions}"
             else:
-                response = f"{best_match[0]} requires {best_match[1]} light, {best_match[2]} water, and prefers {best_match[3]} soil."
+                # Fully structured response for general queries
+                response = (
+                    f"**{plant_name} Planting Guide**\n\n"
+                    f"**Light Requirement:** {light_requirement}\n\n"
+                    f"**Watering Needs:** {water_requirement}\n\n"
+                    f"**Soil Type:** {soil_type}\n\n"
+                    f"**Care Instructions:** {care_instructions}"
+                )
         else:
             response = "Sorry, I couldn't find planting instructions for that plant."
 
