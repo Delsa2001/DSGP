@@ -4,34 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plant Helper Chatbot</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             background-color: #f0f8e8;
+            text-align: center;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             height: 100vh;
         }
+
+        .navBar {
+            background-color: #45a049;
+            overflow: hidden;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            margin: 0;
+        }
+
+        .navBar a {
+            color: #f2f2f2;
+            text-decoration: none;
+            font-size: 17px;
+            padding: 14px 16px;
+        }
+
+        .navBar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
         .chat-container {
-            width: 400px;
+            width: 500px;
+            height: 500px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            margin-top: 20px;
         }
+
         .chat-header {
             background: #2e7d32;
             color: white;
             padding: 15px;
             text-align: center;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
+            border-radius: 10px 10px 0 0;
         }
+
         .chat-box {
             flex-grow: 1;
             height: 400px;
@@ -40,32 +79,37 @@
             display: flex;
             flex-direction: column;
         }
+
         .chat-bubble {
             padding: 10px;
             border-radius: 10px;
             margin-bottom: 10px;
             max-width: 70%;
         }
+
         .user-message {
             background: #a5d6a7;
             align-self: flex-end;
         }
+
         .bot-message {
             background: #eeeeee;
             align-self: flex-start;
         }
+
         .chat-input-container {
             display: flex;
             padding: 10px;
             border-top: 1px solid #ddd;
         }
+
         .chat-input-container input {
             flex: 1;
             padding: 10px;
             border: none;
             border-radius: 5px;
-            outline: none;
         }
+
         .chat-input-container button {
             padding: 10px;
             background: #2e7d32;
@@ -78,64 +122,60 @@
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">🌿 Plant Helper Chatbot 🌿</div>
-        <div class="chat-box" id="chat-box"></div>
-        <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">Send</button>
-        </div>
+<nav class="navBar">
+    <a href="#" id="name">EcoGrow</a>
+    <a href="#" id="about">About</a>
+    <a href="#" id="chatbot">ChatBot</a>
+    <a href="#" id="disease">Disease Identification</a>
+    <a href="#" id="plant_predict">Predict</a>
+</nav>
+
+<div class="chat-container">
+    <div class="chat-header">🌿 Plant Helper Chatbot 🌿</div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-input-container">
+        <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Send</button>
     </div>
+</div>
 
-    <script>
-        const API_URL = "http://127.0.0.1:5000"; // Local Flask API URL
-
-        function sendMessage() {
-            const userInput = document.getElementById("user-input");
-            const message = userInput.value.trim();
-            if (message === "") return;
-
-            appendMessage("user", message);
-            userInput.value = "";
-
-            fetch(`${API_URL}/chat`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ message: message })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.response && data.response.length > 0) {
-                    const combinedResponse = data.response.join("\n\n");
+<script>
+    function sendMessage() {
+        const userInput = document.getElementById("user-input");
+        const message = userInput.value.trim();
+        if (message === "") return;
+        appendMessage("user", message);
+        userInput.value = "";
+        fetch("http://127.0.0.1:5000/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message: message})
+        })
+                .then(response => response.json())
+                .then(data => {
+                    const combinedResponse = data.response ? data.response.join("\n\n") : "Sorry, something went wrong.";
                     appendMessage("bot", combinedResponse);
-                } else {
-                    appendMessage("bot", "Sorry, something went wrong.");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                appendMessage("bot", "Sorry, something went wrong. Please try again.");
-            });
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    appendMessage("bot", "Sorry, something went wrong. Please try again.");
+                });
+    }
+
+    function appendMessage(sender, text) {
+        const chatBox = document.getElementById("chat-box");
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("chat-bubble", sender === "user" ? "user-message" : "bot-message");
+        messageDiv.innerHTML = marked.parse(text);
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
         }
-
-        function appendMessage(sender, text) {
-            const chatBox = document.getElementById("chat-box");
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("chat-bubble", sender === "user" ? "user-message" : "bot-message");
-
-            messageDiv.innerHTML = marked.parse(text);
-
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === "Enter") {
-                sendMessage();
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
