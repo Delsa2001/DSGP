@@ -1,0 +1,32 @@
+query,intent
+"What soil type is best for Zucchini?",ask_planting_techniques
+"Which soil is good for strawberries?",ask_planting_techniques
+"How much water does Cucumber need?",ask_planting_techniques
+"What is the recommended water level for spinach?",ask_planting_techniques
+"How much sunlight does Chili need?",ask_planting_techniques
+"How do I fertilize Tomatoes?",ask_planting_techniques
+"Can I grow basil indoors?",ask_planting_techniques
+"How often should I water Bell Peppers?",ask_planting_techniques
+"Does Mint need full sun or shade?",ask_planting_techniques
+"Is Rust harmful to tomatoes?",ask_plant_disease
+"What are the symptoms of Rust?",ask_plant_disease
+"How do I treat Powdery Mildew?",ask_plant_disease
+"What are the signs of Downy Mildew?",ask_plant_disease
+"How do I stop Black Spot from spreading?",ask_plant_disease
+"Explain how to prevent Botrytis (Gray Mold).",ask_plant_disease
+"Tell me the symptoms of Anthracnose.",ask_plant_disease
+"How do I identify Leaf Spot on plants?",ask_plant_disease
+"Which plant diseases are most common?",ask_plant_disease
+"How to prevent soil infections?",ask_planting_techniques
+"How do I recognize a plant disease?",ask_plant_disease
+"How can I prevent this disease?",ask_plant_disease
+"Which plants are affected by Downy Mildew?",ask_plant_disease
+"Can fungal infections kill my crops?",ask_plant_disease
+"How do I naturally stop plant infections?",ask_plant_disease
+"Which fertilizers prevent plant diseases?",ask_plant_disease
+"Do cucumbers need direct sunlight?",ask_planting_techniques
+"Can I grow lettuce indoors?",ask_planting_techniques
+"What's the best soil for growing onions?",ask_planting_techniques
+"Which soil type is best for growing eggplants?",ask_planting_techniques
+"Can I plant spinach in sandy soil?",ask_planting_techniques
+"How much fertilizer do tomatoes need?",ask_planting_techniques
