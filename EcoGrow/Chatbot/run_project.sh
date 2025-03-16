@@ -24,7 +24,7 @@ nohup python app.py &
 
 #rasa run actions
 
-#rasa run --enable-api
+#rasa run --enable-api --cors "*"
 
 #cd Backend
 #python app.py
