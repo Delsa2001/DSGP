@@ -85,7 +85,7 @@
     </div>
 
     <script>
-        
+        // Image preview
         document.getElementById('imageInput').addEventListener('change', function(event) {
             const imagePreview = document.getElementById('imagePreview');
             const file = event.target.files[0];
@@ -102,7 +102,7 @@
             }
         });
 
-      
+        // Form submission for prediction
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -136,7 +136,7 @@
                     <strong>Prediction:</strong> ${data.predicted_label}
                 `;
 
-                
+                // Optional: add description for diseases
                 if (data.predicted_label === "Rust") {
                     resultDiv.innerHTML += `
                         <p><strong>Rust Disease:</strong> Rust fungi are plant parasites that cause orange, red, yellow, or brown pustules on leaves. It reduces photosynthesis and weakens plants.</p>
