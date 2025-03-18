@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plant Prediction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-
 </head>
 
 <body>
@@ -15,17 +13,17 @@
         <h2>Plant Prediction Model</h2>
 
         <form action="/predict" method="post">
-            <label for="Temperature">Temperature:</label>
-            <input type="number" name="Temperature" step="any" required>
+            <label for="Location">Location (City Name):</label>
+            <input type="text" id="locationInput" name="Location" required onblur="fetchWeather()">
 
-            <label for="Precipitation">Precipitation:</label>
-            <input type="number" name="Precipitation" step="any" required>
+            <label for="Temperature">Temperature (°C):</label>
+            <input type="number" id="temperatureInput" name="Temperature" step="any" required>
 
-            <label for="Humidity">Humidity:</label>
-            <input type="number" name="Humidity" step="any" required>
+            <label for="Precipitation">Precipitation (mm):</label>
+            <input type="number" id="precipitationInput" name="Precipitation" step="any" required>
 
-            <label for="Location">Location (Numeric ID):</label>
-            <input type="number" name="Location" required>
+            <label for="Humidity">Humidity (%):</label>
+            <input type="number" id="humidityInput" name="Humidity" step="any" required>
 
             <label for="Place">Place (Numeric ID):</label>
             <input type="number" name="Place" required>
@@ -37,6 +35,40 @@
         <p class="prediction">Prediction: {{ prediction }}</p>
         {% endif %}
     </div>
+
+    <!-- JavaScript to Fetch Weather Based on User's Location Input -->
+    <script>
+        async function fetchWeather() {
+            let apiKey = "972f6b959f2f4fee93940205252502"; // Replace with your WeatherAPI key
+            let location = document.getElementById("locationInput").value.trim();
+
+            if (!location) {
+                console.log("No location entered. Weather data will not be fetched.");
+                return;
+            }
+
+            let url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=no`;
+
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+
+                if (data.error) {
+                    console.error("Error fetching weather:", data.error.message);
+                    return;
+                }
+
+                // Auto-fill weather values
+                document.getElementById("temperatureInput").value = data.current.temp_c;
+                document.getElementById("humidityInput").value = data.current.humidity;
+                document.getElementById("precipitationInput").value = data.current.precip_mm || 0;
+
+            } catch (error) {
+                console.error("Error fetching weather data:", error);
+            }
+        }
+    </script>
+
 </body>
 
 </html>
