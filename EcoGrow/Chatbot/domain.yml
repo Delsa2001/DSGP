@@ -1,19 +1,19 @@
 version: "3.1"
 
 intents:
-  - greet
-  - goodbye
-  - affirm
-  - deny
-  - mood_great
-  - mood_unhappy
-  - bot_challenge
-  - ask_plant_disease  # ✅ Intent for plant disease queries
-  - ask_planting_techniques  # ✅ Intent for planting techniques
+  - greet  # User greeting (e.g., "Hello", "Hi")
+  - goodbye  # User farewell (e.g., "Bye", "See you later")
+  - affirm  # User confirms something (e.g., "Yes", "Correct")
+  - deny  # User denies something (e.g., "No", "Not really")
+  - mood_great  # User expresses happiness (e.g., "I feel great!", "Amazing")
+  - mood_unhappy  # User expresses sadness or frustration (e.g., "I'm sad", "Not good")
+  - bot_challenge  # User asks if the bot is a human or a bot (e.g., "Are you a bot?")
+  - ask_plant_disease  # ✅ Intent for plant disease queries (symptoms, treatment, causes)
+  - ask_planting_techniques  # ✅ Intent for planting techniques (soil, watering, light, care)
 
 entities:
-  - disease_name  # ✅ Now defined properly
-  - plant_name  # ✅ Added entity for plant queries
+  - disease_name  # ✅ Extracts the name of a plant disease (e.g., "Blight", "Rust")
+  - plant_name  # ✅ Extracts the name of a plant (e.g., "Tomato", "Lettuce")
 
 slots:
   disease_name:
@@ -22,6 +22,7 @@ slots:
     mappings:
       - type: from_entity
         entity: disease_name
+    # Stores the disease name extracted from the user query
 
   plant_name:
     type: text
@@ -29,31 +30,32 @@ slots:
     mappings:
       - type: from_entity
         entity: plant_name
+    # Stores the plant name extracted from the user query
 
 responses:
   utter_greet:
-    - text: "Hey! How are you?"
+    - text: "Hey! How are you?"  # Response when the user greets the bot
 
   utter_goodbye:
-    - text: "Bye"
+    - text: "Bye"  # Response when the user says goodbye
 
   utter_iamabot:
-    - text: "I am a bot, powered by Rasa."
+    - text: "I am a bot, powered by Rasa."  # Response when the user asks if it's a bot
 
   utter_happy:
-    - text: "Great, carry on!"
+    - text: "Great, carry on!"  # Response when the user expresses happiness
 
   utter_cheer_up:
     - text: "Here is something to cheer you up!"
-      image: "https://i.imgur.com/nGF1K8f.jpg"
+      image: "https://i.imgur.com/nGF1K8f.jpg"  # Sends an image if the user is unhappy
 
   utter_did_that_help:
-    - text: "Did that help you?"
+    - text: "Did that help you?"  # Asks for confirmation if an answer was useful
 
 actions:
-  - action_get_plant_info
-  - action_get_planting_techniques  # ✅ Added new action for planting techniques
+  - action_get_plant_info  # ✅ Fetches plant disease details (symptoms, treatments)
+  - action_get_planting_techniques  # ✅ Fetches planting technique details (soil, watering, light)
 
 session_config:
-  session_expiration_time: 60
-  carry_over_slots_to_new_session: true
+  session_expiration_time: 60  # Session expires after 60 minutes
+  carry_over_slots_to_new_session: true  # Retains slot values across sessions

@@ -13,7 +13,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: "Poppins", sans-serif;
             background-color: #f0f8e8;
@@ -24,8 +23,7 @@
             justify-content: flex-start;
             height: 100vh;
         }
-
-        .navBar {
+        .navBar{
             background-color: #45a049;
             overflow: hidden;
             width: 100%;
@@ -34,19 +32,12 @@
             padding: 0 20px;
             margin: 0;
         }
-
         .navBar a {
             color: #f2f2f2;
             text-decoration: none;
             font-size: 17px;
             padding: 14px 16px;
         }
-
-        .navBar a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
         .chat-container {
             width: 500px;
             height: 500px;
@@ -60,7 +51,6 @@
             padding: 20px;
             margin-top: 20px;
         }
-
         .chat-header {
             background: #2e7d32;
             color: white;
@@ -70,7 +60,6 @@
             font-weight: bold;
             border-radius: 10px 10px 0 0;
         }
-
         .chat-box {
             flex-grow: 1;
             height: 400px;
@@ -79,37 +68,31 @@
             display: flex;
             flex-direction: column;
         }
-
         .chat-bubble {
             padding: 10px;
             border-radius: 10px;
             margin-bottom: 10px;
             max-width: 70%;
         }
-
         .user-message {
             background: #a5d6a7;
             align-self: flex-end;
         }
-
         .bot-message {
             background: #eeeeee;
             align-self: flex-start;
         }
-
         .chat-input-container {
             display: flex;
             padding: 10px;
             border-top: 1px solid #ddd;
         }
-
         .chat-input-container input {
             flex: 1;
             padding: 10px;
             border: none;
             border-radius: 5px;
         }
-
         .chat-input-container button {
             padding: 10px;
             background: #2e7d32;
@@ -122,60 +105,64 @@
     </style>
 </head>
 <body>
-<nav class="navBar">
-    <a href="#" id="name">EcoGrow</a>
-    <a href="#" id="about">About</a>
-    <a href="#" id="chatbot">ChatBot</a>
-    <a href="#" id="disease">Disease Identification</a>
-    <a href="#" id="plant_predict">Predict</a>
-</nav>
+    <nav class="navBar">
+        <a href="#" id="name">EcoGrow</a>
+        <a href="#" id="about">About</a>
+        <a href="#" id="chatbot">ChatBot</a>
+        <a href="#" id="disease">Disease Identification</a>
+        <a href="#" id="plant_predict">Predict</a>
+    </nav>
 
-<div class="chat-container">
-    <div class="chat-header">🌿 Plant Helper Chatbot 🌿</div>
-    <div class="chat-box" id="chat-box"></div>
-    <div class="chat-input-container">
-        <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage()">Send</button>
+    <div class="chat-container">
+        <div class="chat-header">🌿 Plant Helper Chatbot 🌿</div>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input-container">
+            <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
     </div>
-</div>
 
-<script>
-    function sendMessage() {
-        const userInput = document.getElementById("user-input");
-        const message = userInput.value.trim();
-        if (message === "") return;
-        appendMessage("user", message);
-        userInput.value = "";
-        fetch("http://127.0.0.1:5000/chat", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({message: message})
-        })
-                .then(response => response.json())
-                .then(data => {
-                    const combinedResponse = data.response ? data.response.join("\n\n") : "Sorry, something went wrong.";
-                    appendMessage("bot", combinedResponse);
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    appendMessage("bot", "Sorry, something went wrong. Please try again.");
-                });
-    }
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById("user-input");
+            const message = userInput.value.trim();
+            if (message === "") return;
+            appendMessage("user", message);
+            userInput.value = "";
 
-    function appendMessage(sender, text) {
-        const chatBox = document.getElementById("chat-box");
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("chat-bubble", sender === "user" ? "user-message" : "bot-message");
-        messageDiv.innerHTML = marked.parse(text);
-        chatBox.appendChild(messageDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+            const thinkingMessage = appendMessage("bot", "Bot is thinking...");
 
-    function handleKeyPress(event) {
-        if (event.key === "Enter") {
-            sendMessage();
+            fetch("http://127.0.0.1:5000/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                thinkingMessage.remove();
+                const combinedResponse = data.response ? data.response.join("\n\n") : "Sorry, something went wrong.";
+                appendMessage("bot", combinedResponse);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                thinkingMessage.remove();
+                appendMessage("bot", "Sorry, something went wrong. Please try again.");
+            });
         }
-    }
-</script>
+        function appendMessage(sender, text) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("chat-bubble", sender === "user" ? "user-message" : "bot-message");
+            messageDiv.innerHTML = marked.parse(text);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return messageDiv;
+        }
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+    </script>
 </body>
 </html>

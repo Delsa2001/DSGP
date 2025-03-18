@@ -11,12 +11,52 @@ rules:
   - intent: bot_challenge
   - action: utter_iamabot
 
-- rule: Answer plant disease queries
+- rule: Answer plant disease queries with symptoms
+  condition:
+  - slot_was_set:
+      - disease_name
   steps:
   - intent: ask_plant_disease
   - action: action_get_plant_info
 
-- rule: Answer planting technique queries
+- rule: Answer plant disease queries with treatment
+  condition:
+  - slot_was_set:
+      - disease_name
+  steps:
+  - intent: ask_plant_disease
+  - action: action_get_plant_info
+
+- rule: Answer plant disease general queries
+  steps:
+  - intent: ask_plant_disease
+  - action: action_get_plant_info
+
+- rule: Answer planting technique queries about soil
+  condition:
+  - slot_was_set:
+      - plant_name
+  steps:
+  - intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+
+- rule: Answer planting technique queries about watering
+  condition:
+  - slot_was_set:
+      - plant_name
+  steps:
+  - intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+
+- rule: Answer planting technique queries about light requirements
+  condition:
+  - slot_was_set:
+      - plant_name
+  steps:
+  - intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+
+- rule: Answer general planting technique queries
   steps:
   - intent: ask_planting_techniques
   - action: action_get_planting_techniques

@@ -8,12 +8,65 @@ stories:
   - intent: mood_great
   - action: utter_happy
 
-- story: plant disease query
+- story: plant disease symptoms query
   steps:
   - intent: ask_plant_disease
   - action: action_get_plant_info
+  - user: |
+      What are the symptoms?
+    intent: ask_plant_disease
+  - action: action_get_plant_info
 
-- story: planting technique query
+- story: plant disease treatment query
+  steps:
+  - intent: ask_plant_disease
+  - action: action_get_plant_info
+  - user: |
+      How do I treat it?
+    intent: ask_plant_disease
+  - action: action_get_plant_info
+
+- story: general plant disease query
+  steps:
+  - intent: ask_plant_disease
+  - action: action_get_plant_info
+  - user: |
+      What is this disease about?
+    intent: ask_plant_disease
+  - action: action_get_plant_info
+
+- story: planting technique soil query
   steps:
   - intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+  - user: |
+      What soil type is best?
+    intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+
+- story: planting technique watering query
+  steps:
+  - intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+  - user: |
+      How much water does it need?
+    intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+
+- story: planting technique light query
+  steps:
+  - intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+  - user: |
+      What light conditions does it require?
+    intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+
+- story: general planting technique query
+  steps:
+  - intent: ask_planting_techniques
+  - action: action_get_planting_techniques
+  - user: |
+      How do I care for this plant?
+    intent: ask_planting_techniques
   - action: action_get_planting_techniques

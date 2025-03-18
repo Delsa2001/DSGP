@@ -83,7 +83,7 @@ nlu:
     - am I talking to a bot?
     - am I talking to a human?
 
-- intent: ask_plant_disease  # ✅ Intent for plant disease queries
+- intent: ask_plant_disease
   examples: |
     - Tell me about [Powdery Mildew](disease_name)
     - What are the symptoms of [Rust](disease_name)?
@@ -96,6 +96,11 @@ nlu:
     - What does [Cercospora Leaf Spot](disease_name) look like?
     - How can I prevent [Botrytis (Gray Mold)](disease_name)?
     - Do you have details on [Black Spot](disease_name)?
+    - What treatment is available for [Powdery Mildew](disease_name)?
+    - How to cure [Rust](disease_name)?
+    - What are the first signs of [Blight](disease_name)?
+    - Is [Leaf Spot](disease_name) dangerous for plants?
+    - Can [Anthracnose](disease_name) spread to other plants?
 
 - intent: ask_planting_techniques
   examples: |
@@ -104,3 +109,12 @@ nlu:
     - Tell me how to plant [Carrot](plant_name).
     - What is the soil type required for [Basil](plant_name)?
     - How much water does [Cucumber](plant_name) need?
+    - What is the best soil for [Zucchini](plant_name)?
+    - How often should I water [Spinach](plant_name)?
+    - What light conditions does [Bell Pepper](plant_name) need?
+    - Can I plant [Mint](plant_name) indoors?
+    - What are the care instructions for [Rosemary](plant_name)?
+    - What is the best soil pH for [Strawberries](plant_name)?
+    - How should I prepare the soil for [Blueberries](plant_name)?
+    - How much sunlight does [Parsley](plant_name) need?
+    - What fertilizers are best for [Chili](plant_name)?

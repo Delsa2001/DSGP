@@ -1,91 +1,44 @@
-#### This file contains tests to evaluate that your bot behaves as expected.
-#### If you want to learn more, please see the docs: https://rasa.com/docs/rasa/testing-your-assistant
+version: "3.1"
 
 stories:
-- story: happy path 1
+- story: Test plant disease query
   steps:
   - user: |
-      hello there!
-    intent: greet
-  - action: utter_greet
-  - user: |
-      amazing
-    intent: mood_great
-  - action: utter_happy
+      How do I treat Powdery Mildew?
+    intent: ask_plant_disease
+  - action: action_get_plant_info
 
-- story: happy path 2
+- story: Test plant disease symptoms
   steps:
   - user: |
-      hello there!
-    intent: greet
-  - action: utter_greet
-  - user: |
-      amazing
-    intent: mood_great
-  - action: utter_happy
-  - user: |
-      bye-bye!
-    intent: goodbye
-  - action: utter_goodbye
+      What are the symptoms of Rust?
+    intent: ask_plant_disease
+  - action: action_get_plant_info
 
-- story: sad path 1
+- story: Test common plant disease query
   steps:
   - user: |
-      hello
-    intent: greet
-  - action: utter_greet
-  - user: |
-      not good
-    intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - user: |
-      yes
-    intent: affirm
-  - action: utter_happy
+      Which plant diseases are most common?
+    intent: ask_plant_disease
+  - action: action_get_plant_info
 
-- story: sad path 2
+- story: Test planting technique query (soil)
   steps:
   - user: |
-      hello
-    intent: greet
-  - action: utter_greet
-  - user: |
-      not good
-    intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - user: |
-      not really
-    intent: deny
-  - action: utter_goodbye
+      What soil type is best for Zucchini?
+    intent: ask_planting_techniques
+  - action: action_get_planting_techniques
 
-- story: sad path 3
+- story: Test planting technique query (water)
   steps:
   - user: |
-      hi
-    intent: greet
-  - action: utter_greet
-  - user: |
-      very terrible
-    intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - user: |
-      no
-    intent: deny
-  - action: utter_goodbye
+      How much water does Cucumber need?
+    intent: ask_planting_techniques
+  - action: action_get_planting_techniques
 
-- story: say goodbye
+- story: Test planting technique query (light requirement)
   steps:
   - user: |
-      bye-bye!
-    intent: goodbye
-  - action: utter_goodbye
-
-- story: bot challenge
-  steps:
-  - user: |
-      are you a bot?
-    intent: bot_challenge
-  - action: utter_iamabot
+      How much sunlight does Chili need?
+    intent: ask_planting_techniques
+  - action: action_get_planting_techniques
