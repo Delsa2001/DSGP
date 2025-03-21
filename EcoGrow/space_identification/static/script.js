@@ -6,9 +6,11 @@ const newButton = document.getElementById("new-btn");
 const submitButton = document.getElementById("submit-btn");
 const predictionResultCam = document.getElementById("prediction-result-cam");
 const predictionResultForm = document.getElementById("prediction-result-form");
-
-
+const fileInput = document.getElementById("file");
 const ctx = canvas.getContext("2d");
+
+
+
 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -22,6 +24,9 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
 
 captureButton.addEventListener("click", () => {
+
+
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -46,6 +51,12 @@ newButton.addEventListener("click", () => {
 });
 
 submitButton.addEventListener("click", () => {
+
+    if (predictionResultForm.innerText.trim()){
+        alert("Image is already uploaded. Please Refresh to capture an image");
+        return;
+    }
+
     canvas.toBlob((blob) => {
         const formData = new FormData();
         formData.append("file", blob, "captured-image.png");
@@ -63,20 +74,27 @@ submitButton.addEventListener("click", () => {
 });
 
 document.getElementById("uploadButton").addEventListener("click", () => {
-const fileInput = document.getElementById("file");
-const formData = new FormData();
-formData.append("file", fileInput.files[0]);
+    const imageCaptured = ctx && ctx.getImageData(0, 0, canvas.width, canvas.height).data.some(channel => channel !== 0);
+    //const predictionResultCam = document.getElementById("prediction-result-cam");
 
-fetch("/space_identification/", {
-    method: "POST",
-    body: formData
-})
-.then(response => response.json())
-.then(data => {
-    predictionResultForm.innerText = `Prediction: ${data.prediction}`;
-})
-.catch(error => console.error("Error:", error));
-});
+    if (predictionResultCam.innerText.trim()){
+        alert("Image is already captured. Please reftresh to upload file");
+        return;
+    }
+    const fileInput = document.getElementById("file");
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    fetch("/space_identification/", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        predictionResultForm.innerText = `Prediction: ${data.prediction}`;
+    })
+    .catch(error => console.error("Error:", error));
+    });
 
 
 function validation(){
@@ -99,20 +117,26 @@ function validation(){
        //     result = predictionResultForm;
        // } 
 
+       if(result == "Not a Balcony or Indoor Space") { 
+            alert("Please Input a image or a balcony or indoor space");
+            return;
+       }
+
+
        result = result.toLowerCase().includes("balcony") ? "Balcony" : result.toLowerCase().includes("indoor") ? "Indoor" : result;
 
         if (!result) {
             alert("Prediction not found. Please try again.");
             return;
         }
-
+        
         fetch("/space_identification/store_result", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ result: result })
         })
         .then(response => {
-            console.log("Response status:", response.status); // Debug
+            console.log("Response status:", response.status); 
             return response.json();
         })
         .then(data => {
