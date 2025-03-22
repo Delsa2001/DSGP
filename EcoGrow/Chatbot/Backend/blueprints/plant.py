@@ -14,14 +14,13 @@ WIKIPEDIA_API = "https://en.wikipedia.org/api/rest_v1/page/summary/"
 TREFLE_API_TOKEN = os.getenv("TREFLE_API_KEY")
 TREFLE_API_PLANT = f"https://trefle.io/api/v1/plants/search?token={TREFLE_API_TOKEN}&q="
 
-# Use absolute paths to ensure the databases are always found correctly
+# Safe absolute paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
 DISEASES_DB_PATH = os.path.join(PROJECT_ROOT, "actions", "plant_diseases.db")
 PLANTING_DB_PATH = os.path.join(PROJECT_ROOT, "actions", "planting_techniques.db")
 
 def fetch_from_db(db_path, query, param):
-    """Helper function to fetch data from SQLite"""
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -34,7 +33,6 @@ def fetch_from_db(db_path, query, param):
         return None
 
 def fetch_from_external_api(query, is_disease=True):
-    """Fetch data from an external source if not found in the database"""
     api_url = WIKIPEDIA_API + query if is_disease else TREFLE_API_PLANT + query
     try:
         response = requests.get(api_url, timeout=5)
@@ -51,7 +49,6 @@ def get_plant_disease():
         return jsonify({"error": "Disease name is required"}), 400
 
     print(f"[INFO] Looking up disease: {disease_name}")
-
     disease = fetch_from_db(
         DISEASES_DB_PATH,
         "SELECT disease_name, description, symptoms, treatment FROM plant_diseases WHERE LOWER(disease_name) = ?",
@@ -66,7 +63,6 @@ def get_plant_disease():
             "treatment": disease[3]
         })
 
-    # Fetch from Wikipedia if not found in database
     external_data = fetch_from_external_api(disease_name, is_disease=True)
     if external_data:
         return jsonify({
@@ -84,7 +80,6 @@ def get_planting_techniques():
         return jsonify({"error": "Plant name is required"}), 400
 
     print(f"[INFO] Looking up planting techniques for: {plant_name}")
-
     plant = fetch_from_db(
         PLANTING_DB_PATH,
         "SELECT plant_name, light_requirement, water_requirement, soil_type, care_instructions FROM planting_techniques WHERE LOWER(plant_name) = ?",
@@ -100,7 +95,6 @@ def get_planting_techniques():
             "care_instructions": plant[4]
         })
 
-    # Fetch from Trefle.io if not found in database
     external_data = fetch_from_external_api(plant_name, is_disease=False)
     if external_data and "data" in external_data and len(external_data["data"]) > 0:
         plant_data = external_data["data"][0]
