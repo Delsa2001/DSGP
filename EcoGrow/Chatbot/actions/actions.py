@@ -12,16 +12,25 @@ DISEASES_DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
 PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
 FLASK_API_URL = "http://localhost:5000/api"
 
+# Helper to clean and extract fallback name
+def extract_fallback_name(user_query):
+    cleaned = re.sub(r'[^\w\s]', '', user_query).strip()
+    return cleaned.split()[-1]
+
 class ActionGetPlantInfo(Action):
     def name(self):
         return "action_get_plant_info"
 
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get("text").strip().lower()
+
+        # ✅ Expanded keyword list
         KEYWORDS = [
             "disease", "symptom", "treatment", "cure", "infection",
-            "blight", "spot", "mildew", "virus", "wilt", "rot", "fungus", "bacteria", "rust", "leaf"
+            "blight", "spot", "mildew", "virus", "wilt", "rot",
+            "fungus", "bacteria", "rust", "leaf", "cause", "causes", "reason"
         ]
+
         if not any(keyword in user_query for keyword in KEYWORDS):
             dispatcher.utter_message(text="I can only help with plant diseases or planting techniques.")
             return []
@@ -42,7 +51,7 @@ class ActionGetPlantInfo(Action):
 
         if best_match and highest_score > 0.5:
             disease_name, description, symptoms, treatment = best_match
-            if "symptoms" in user_query:
+            if "symptom" in user_query:
                 response = f"**{disease_name} Symptoms**\n\n{symptoms}"
             elif "treatment" in user_query or "cure" in user_query:
                 response = f"**{disease_name} Treatment**\n\n{treatment}"
@@ -55,8 +64,10 @@ class ActionGetPlantInfo(Action):
                     f"**Symptoms:** {symptoms}\n\n"
                     f"**Treatment:** {treatment}"
                 )
+            print(f"[LOG] Matched disease from DB: {disease_name}")
         else:
-            fallback_name = re.sub(r"[^\w\s]", "", user_query.split()[-1])
+            fallback_name = extract_fallback_name(user_query)
+            print(f"[LOG] Disease fallback triggered for: {fallback_name}")
             try:
                 r = requests.get(f"{FLASK_API_URL}/plant_disease", params={"name": fallback_name})
                 data = r.json()
@@ -66,14 +77,16 @@ class ActionGetPlantInfo(Action):
                         f"{data.get('description', '')}\n\n"
                         f"Source: {data.get('source', 'N/A')}"
                     )
+                    print("[LOG] Fallback disease data found ✅")
                 else:
                     response = "I couldn't find any info on that disease. Try another one?"
-            except:
+                    print("[LOG] Fallback failed ❌")
+            except Exception as e:
                 response = "Something went wrong fetching external disease info."
+                print(f"[ERROR] Disease fallback exception: {e}")
 
         dispatcher.utter_message(text=response)
         return []
-
 
 class ActionGetPlantingTechniques(Action):
     def name(self):
@@ -81,7 +94,9 @@ class ActionGetPlantingTechniques(Action):
 
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get("text").strip().lower()
-        KEYWORDS = ["planting", "grow", "soil", "water", "care", "light"]
+
+        # ✅ Expanded planting keywords
+        KEYWORDS = ["plant", "planting", "grow", "soil", "water", "care", "light", "sun", "sunlight", "sunshine"]
         if not any(keyword in user_query for keyword in KEYWORDS):
             dispatcher.utter_message(text="Please ask about how to plant or care for a specific plant.")
             return []
@@ -108,7 +123,7 @@ class ActionGetPlantingTechniques(Action):
                 response = f"**{plant_name} Soil Requirement**\n\n{soil}"
             elif "water" in user_query:
                 response = f"**{plant_name} Watering Needs**\n\n{water}"
-            elif "light" in user_query:
+            elif "light" in user_query or "sun" in user_query:
                 response = f"**{plant_name} Light Requirement**\n\n{light}"
             elif "care" in user_query:
                 response = f"**{plant_name} Care Instructions**\n\n{care}"
@@ -120,22 +135,28 @@ class ActionGetPlantingTechniques(Action):
                     f"**Soil:** {soil}\n\n"
                     f"**Care:** {care}"
                 )
+            print(f"[LOG] Matched planting technique from DB: {plant_name}")
         else:
-            fallback_name = re.sub(r"[^\w\s]", "", user_query.split()[-1])
+            fallback_name = extract_fallback_name(user_query)
+            print(f"[LOG] Planting fallback triggered for: {fallback_name}")
             try:
                 r = requests.get(f"{FLASK_API_URL}/planting_techniques", params={"name": fallback_name})
                 data = r.json()
                 if "error" not in data:
                     response = (
                         f"**{data['plant_name']} (from external source)**\n\n"
-                        f"Family: {data.get('family', 'Unknown')}\n"
-                        f"Genus: {data.get('genus', 'Unknown')}\n"
+                        f"Description: {data.get('description', 'No info')}\n"
+                        f"Sun Requirements: {data.get('sun_requirements', 'Unknown')}\n"
+                        f"Sowing Method: {data.get('sowing_method', 'Unknown')}\n"
                         f"Source: {data.get('source', 'N/A')}"
                     )
+                    print("[LOG] Fallback planting data found ✅")
                 else:
                     response = "I couldn’t find anything for that plant. Try a different name?"
-            except:
+                    print("[LOG] Fallback failed ❌")
+            except Exception as e:
                 response = "Something went wrong while trying to look that up externally."
+                print(f"[ERROR] Planting fallback exception: {e}")
 
         dispatcher.utter_message(text=response)
         return []
