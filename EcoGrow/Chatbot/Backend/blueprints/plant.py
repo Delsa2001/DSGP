@@ -2,19 +2,12 @@ import os
 import sqlite3
 import requests
 from flask import Blueprint, request, jsonify
-from dotenv import load_dotenv
-
-# Load API keys from .env file
-load_dotenv()
 
 plant_bp = Blueprint('plant', __name__)
 
-# External API URLs
 WIKIPEDIA_API = "https://en.wikipedia.org/api/rest_v1/page/summary/"
-TREFLE_API_TOKEN = os.getenv("TREFLE_API_KEY")
-TREFLE_API_PLANT = f"https://trefle.io/api/v1/plants/search?token={TREFLE_API_TOKEN}&q="
+OPENFARM_API = "https://openfarm.cc/api/v1/crops/?filter="
 
-# Safe absolute paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
 DISEASES_DB_PATH = os.path.join(PROJECT_ROOT, "actions", "plant_diseases.db")
@@ -33,7 +26,11 @@ def fetch_from_db(db_path, query, param):
         return None
 
 def fetch_from_external_api(query, is_disease=True):
-    api_url = WIKIPEDIA_API + query if is_disease else TREFLE_API_PLANT + query
+    if is_disease:
+        api_url = WIKIPEDIA_API + query
+    else:
+        api_url = OPENFARM_API + query
+
     try:
         response = requests.get(api_url, timeout=5)
         response.raise_for_status()
@@ -97,13 +94,13 @@ def get_planting_techniques():
 
     external_data = fetch_from_external_api(plant_name, is_disease=False)
     if external_data and "data" in external_data and len(external_data["data"]) > 0:
-        plant_data = external_data["data"][0]
+        crop = external_data["data"][0]["attributes"]
         return jsonify({
-            "plant_name": plant_data.get("common_name", plant_name.capitalize()),
-            "scientific_name": plant_data.get("scientific_name", "Unknown"),
-            "family": plant_data.get("family", "Unknown"),
-            "genus": plant_data.get("genus", "Unknown"),
-            "source": plant_data.get("links", {}).get("self", "No source available.")
+            "plant_name": plant_name.capitalize(),
+            "description": crop.get("description", "No description available."),
+            "sun_requirements": crop.get("sun_requirements", "Unknown"),
+            "sowing_method": crop.get("sowing_method", "Unknown"),
+            "source": "https://openfarm.cc/crop/" + plant_name.replace(" ", "-")
         })
 
     return jsonify({"error": "Plant not found in database or external sources"}), 404
