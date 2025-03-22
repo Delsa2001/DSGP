@@ -1,20 +1,16 @@
 import os
 import sqlite3
 import requests
+import re
 from rasa_sdk import Action
 from sentence_transformers import SentenceTransformer, util
 
-# Load SBERT model
 sbert_model = SentenceTransformer("./sbert_model")
 
-# Local DB paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DISEASES_DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
 PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
-
-# Your local Flask API base URL
 FLASK_API_URL = "http://localhost:5000/api"
-
 
 class ActionGetPlantInfo(Action):
     def name(self):
@@ -22,14 +18,11 @@ class ActionGetPlantInfo(Action):
 
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get("text").strip().lower()
-
-        # Only proceed if disease-related keywords exist
         KEYWORDS = ["disease", "symptom", "treatment", "cure", "infection", "blight", "spot", "mildew"]
         if not any(keyword in user_query for keyword in KEYWORDS):
             dispatcher.utter_message(text="I can only help with plant diseases or planting techniques.")
             return []
 
-        # Search local DB
         conn = sqlite3.connect(DISEASES_DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT disease_name, description, symptoms, treatment FROM plant_diseases")
@@ -46,7 +39,6 @@ class ActionGetPlantInfo(Action):
 
         if best_match and highest_score > 0.5:
             disease_name, description, symptoms, treatment = best_match
-
             if "symptoms" in user_query:
                 response = f"**{disease_name} Symptoms**\n\n{symptoms}"
             elif "treatment" in user_query or "cure" in user_query:
@@ -61,8 +53,7 @@ class ActionGetPlantInfo(Action):
                     f"**Treatment:** {treatment}"
                 )
         else:
-            # Fallback to your Flask API for disease
-            fallback_name = user_query.split()[-1]  # crude extract
+            fallback_name = re.sub(r"[^\w\s]", "", user_query.split()[-1])
             try:
                 r = requests.get(f"{FLASK_API_URL}/plant_disease", params={"name": fallback_name})
                 data = r.json()
@@ -87,8 +78,6 @@ class ActionGetPlantingTechniques(Action):
 
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get("text").strip().lower()
-
-        # Ensure it's about planting
         KEYWORDS = ["planting", "grow", "soil", "water", "care", "light"]
         if not any(keyword in user_query for keyword in KEYWORDS):
             dispatcher.utter_message(text="Please ask about how to plant or care for a specific plant.")
@@ -112,7 +101,6 @@ class ActionGetPlantingTechniques(Action):
 
         if best_match and highest_score > 0.5:
             plant_name, light, water, soil, care = best_match
-
             if "soil" in user_query:
                 response = f"**{plant_name} Soil Requirement**\n\n{soil}"
             elif "water" in user_query:
@@ -130,8 +118,7 @@ class ActionGetPlantingTechniques(Action):
                     f"**Care:** {care}"
                 )
         else:
-            # Fallback to Flask API
-            fallback_name = user_query.split()[-1]
+            fallback_name = re.sub(r"[^\w\s]", "", user_query.split()[-1])
             try:
                 r = requests.get(f"{FLASK_API_URL}/planting_techniques", params={"name": fallback_name})
                 data = r.json()
