@@ -3,10 +3,10 @@ import sqlite3
 from rasa_sdk import Action
 from sentence_transformers import SentenceTransformer, util
 
-# ✅ Load SBERT from local storage instead of downloading it each time
-sbert_model = SentenceTransformer("./sbert_model")  # Uses locally stored model
+# Load SBERT model from local path (no need to download every time)
+sbert_model = SentenceTransformer("./sbert_model")
 
-# ✅ Get the correct database paths
+# Define paths to local SQLite databases
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DISEASES_DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
 PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
@@ -19,14 +19,14 @@ class ActionGetPlantInfo(Action):
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get('text').strip().lower()
 
-        # ✅ Connect to the plant diseases database
+        # Connect to the plant diseases database
         conn = sqlite3.connect(DISEASES_DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT disease_name, description, symptoms, treatment FROM plant_diseases")
         diseases = cursor.fetchall()
         conn.close()
 
-        # ✅ Use SBERT to find the best-matching disease
+        # Use SBERT to find the most semantically similar disease
         query_embedding = sbert_model.encode(user_query)
         best_match, highest_score = None, 0
         for disease in diseases:
@@ -41,7 +41,7 @@ class ActionGetPlantInfo(Action):
             symptoms = best_match[2]
             treatment = best_match[3]
 
-            # ✅ Structured response for specific queries
+            # Conditional response based on keywords
             if "symptoms" in user_query:
                 response = f"**{disease_name} Symptoms**\n\n{symptoms}"
             elif "treatment" in user_query or "cure" in user_query:
@@ -49,7 +49,6 @@ class ActionGetPlantInfo(Action):
             elif "description" in user_query:
                 response = f"**{disease_name} Description**\n\n{description}"
             else:
-                # ✅ Fully structured response for general queries
                 response = (
                     f"**{disease_name} Information**\n\n"
                     f"**Description:** {description}\n\n"
@@ -70,7 +69,19 @@ class ActionGetPlantingTechniques(Action):
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get('text').strip().lower()
 
-        # ✅ Connect to the planting techniques database
+        # Define relevant keywords for planting-related queries
+        KEYWORDS = ["planting", "grow", "soil", "water", "care", "light"]
+
+        # Check if query contains at least one valid keyword
+        if not any(keyword in user_query for keyword in KEYWORDS):
+            response = (
+                "Please ask specifically about planting techniques or care instructions — "
+                "such as how to grow, watering needs, soil type, or light requirements."
+            )
+            dispatcher.utter_message(text=response)
+            return []
+
+        # Connect to the planting techniques database
         conn = sqlite3.connect(PLANTING_DB_PATH)
         cursor = conn.cursor()
         cursor.execute(
@@ -79,7 +90,7 @@ class ActionGetPlantingTechniques(Action):
         plants = cursor.fetchall()
         conn.close()
 
-        # ✅ Use SBERT to find the best-matching plant
+        # Use SBERT to find the most relevant plant match
         query_embedding = sbert_model.encode(user_query)
         best_match, highest_score = None, 0
         for plant in plants:
@@ -95,7 +106,7 @@ class ActionGetPlantingTechniques(Action):
             soil_type = best_match[3]
             care_instructions = best_match[4]
 
-            # ✅ Structured response for specific queries
+            # Response tailored to specific interest
             if "soil" in user_query:
                 response = f"**{plant_name} Soil Requirement**\n\nThe best soil type for {plant_name} is: {soil_type}"
             elif "water" in user_query or "watering" in user_query:
@@ -105,7 +116,7 @@ class ActionGetPlantingTechniques(Action):
             elif "care" in user_query:
                 response = f"**{plant_name} Care Instructions**\n\n{care_instructions}"
             else:
-                # ✅ Fully structured response for general queries
+                # Full planting guide if general query
                 response = (
                     f"**{plant_name} Planting Guide**\n\n"
                     f"**Light Requirement:** {light_requirement}\n\n"
