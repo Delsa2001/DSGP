@@ -14,19 +14,24 @@ WIKIPEDIA_API = "https://en.wikipedia.org/api/rest_v1/page/summary/"
 TREFLE_API_TOKEN = os.getenv("TREFLE_API_KEY")
 TREFLE_API_PLANT = f"https://trefle.io/api/v1/plants/search?token={TREFLE_API_TOKEN}&q="
 
-# Get the correct database paths
+# Use absolute paths to ensure the databases are always found correctly
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DISEASES_DB_PATH = os.path.join(BASE_DIR, "..", "actions", "plant_diseases.db")
-PLANTING_DB_PATH = os.path.join(BASE_DIR, "..", "actions", "planting_techniques.db")
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
+DISEASES_DB_PATH = os.path.join(PROJECT_ROOT, "actions", "plant_diseases.db")
+PLANTING_DB_PATH = os.path.join(PROJECT_ROOT, "actions", "planting_techniques.db")
 
 def fetch_from_db(db_path, query, param):
     """Helper function to fetch data from SQLite"""
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute(query, (param,))
-    result = cursor.fetchone()
-    conn.close()
-    return result
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute(query, (param,))
+        result = cursor.fetchone()
+        conn.close()
+        return result
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return None
 
 def fetch_from_external_api(query, is_disease=True):
     """Fetch data from an external source if not found in the database"""
@@ -44,6 +49,8 @@ def get_plant_disease():
     disease_name = request.args.get("name", "").strip().lower()
     if not disease_name:
         return jsonify({"error": "Disease name is required"}), 400
+
+    print(f"[INFO] Looking up disease: {disease_name}")
 
     disease = fetch_from_db(
         DISEASES_DB_PATH,
@@ -75,6 +82,8 @@ def get_planting_techniques():
     plant_name = request.args.get("name", "").strip().lower()
     if not plant_name:
         return jsonify({"error": "Plant name is required"}), 400
+
+    print(f"[INFO] Looking up planting techniques for: {plant_name}")
 
     plant = fetch_from_db(
         PLANTING_DB_PATH,
