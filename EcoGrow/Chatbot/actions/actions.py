@@ -18,7 +18,10 @@ class ActionGetPlantInfo(Action):
 
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get("text").strip().lower()
-        KEYWORDS = ["disease", "symptom", "treatment", "cure", "infection", "blight", "spot", "mildew"]
+        KEYWORDS = [
+            "disease", "symptom", "treatment", "cure", "infection",
+            "blight", "spot", "mildew", "virus", "wilt", "rot", "fungus", "bacteria", "rust", "leaf"
+        ]
         if not any(keyword in user_query for keyword in KEYWORDS):
             dispatcher.utter_message(text="I can only help with plant diseases or planting techniques.")
             return []
