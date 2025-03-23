@@ -5,9 +5,6 @@ import re
 from rasa_sdk import Action
 from sentence_transformers import SentenceTransformer, util
 
-# Load the SBERT model from local path
-sbert_model = SentenceTransformer("./sbert_model")
-
 # Set fallback API base URL
 FLASK_API_URL = "http://localhost:5000/api"
 
@@ -15,6 +12,11 @@ FLASK_API_URL = "http://localhost:5000/api"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DISEASES_DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
 PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
+
+# Load SBERT model from root-level /sbert_model folder
+PROJECT_ROOT = os.path.dirname(BASE_DIR)  # goes up from /actions
+SBERT_MODEL_PATH = os.path.join(PROJECT_ROOT, "sbert_model")
+sbert_model = SentenceTransformer(SBERT_MODEL_PATH)
 
 # Helper to sanitize fallback query (removes filler phrases)
 def sanitize_for_fallback(text):
