@@ -39,8 +39,8 @@
             padding: 14px 16px;
         }
         .chat-container {
-            width: 500px;
-            height: 800px;
+            width: 700px;
+            height: 850px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -153,11 +153,22 @@
             const chatBox = document.getElementById("chat-box");
             const messageDiv = document.createElement("div");
             messageDiv.classList.add("chat-bubble", sender === "user" ? "user-message" : "bot-message");
+
+            // Parse markdown into HTML
             messageDiv.innerHTML = marked.parse(text);
+
+            // Make links open in a new tab
+            const links = messageDiv.querySelectorAll("a");
+            links.forEach(link => {
+            link.setAttribute("target", "_blank");
+            link.setAttribute("rel", "noopener noreferrer");
+            });
+
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
             return messageDiv;
         }
+
         function handleKeyPress(event) {
             if (event.key === "Enter") {
                 sendMessage();
