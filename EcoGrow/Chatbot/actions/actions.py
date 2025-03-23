@@ -1,41 +1,51 @@
 import os
 import sqlite3
 import requests
+import re
 from rasa_sdk import Action
 from sentence_transformers import SentenceTransformer, util
 
-# Load SBERT model from local path (avoids re-downloading)
+# Load the SBERT model from local path
 sbert_model = SentenceTransformer("./sbert_model")
 
-# API path for fallback (Flask app)
+# Set fallback API base URL
 FLASK_API_URL = "http://localhost:5000/api"
 
-# Define local database paths
+# Define DB paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DISEASES_DB_PATH = os.path.join(BASE_DIR, "plant_diseases.db")
 PLANTING_DB_PATH = os.path.join(BASE_DIR, "planting_techniques.db")
 
+# Helper to sanitize fallback query (removes filler phrases)
+def sanitize_for_fallback(text):
+    text = text.lower().strip().replace("?", "")
+    text = re.sub(
+        r"\b(what is|tell me about|information on|how to grow|how do i grow|how to cure|how to treat|watering method for|sunlight required for|care instructions for)\b",
+        "",
+        text,
+    )
+    return text.strip()
 
+# ======================
+# 🌿 Disease Action
+# ======================
 class ActionGetPlantInfo(Action):
     def name(self):
         return "action_get_plant_info"
 
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get("text").strip().lower()
-
-        # Keywords to detect valid plant disease queries
         KEYWORDS = [
             "disease", "symptom", "treatment", "cure", "infection",
             "blight", "spot", "mildew", "virus", "wilt", "rot",
-            "fungus", "bacteria", "rust", "leaf", "cause", "causes", "reason",
-            "info", "information", "about"
+            "fungus", "bacteria", "rust", "leaf", "cause", "causes",
+            "reason", "info", "information", "about"
         ]
 
         if not any(word in user_query for word in KEYWORDS):
             dispatcher.utter_message(text="I can only help with plant diseases or planting techniques.")
             return []
 
-        # === Attempt local DB lookup ===
         try:
             conn = sqlite3.connect(DISEASES_DB_PATH)
             cursor = conn.cursor()
@@ -52,12 +62,7 @@ class ActionGetPlantInfo(Action):
                     highest_score, best_match = similarity, disease
 
             if best_match and highest_score > 0.5:
-                disease_name = best_match[0]
-                description = best_match[1]
-                symptoms = best_match[2]
-                treatment = best_match[3]
-
-                # Keyword-specific structured response
+                disease_name, description, symptoms, treatment = best_match
                 if "symptom" in user_query:
                     response = f"**{disease_name} Symptoms**\n\n{symptoms}"
                 elif "treatment" in user_query or "cure" in user_query:
@@ -71,14 +76,14 @@ class ActionGetPlantInfo(Action):
                         f"**Symptoms:** {symptoms}\n\n"
                         f"**Treatment:** {treatment}"
                     )
-
                 dispatcher.utter_message(text=response)
                 return []
+
         except Exception as e:
             print(f"[ERROR] Local DB disease lookup failed: {e}")
 
-        # === Fallback: External API (Wikipedia via Flask) ===
-        fallback_name = user_query.replace("?", "").strip()
+        # Fallback to Wikipedia
+        fallback_name = sanitize_for_fallback(user_query)
         print(f"[INFO] Looking up disease fallback: {fallback_name}")
 
         try:
@@ -93,10 +98,8 @@ class ActionGetPlantInfo(Action):
                     f"**Description:** {description}\n\n"
                     f"**Source:** {source}"
                 )
-                print(f"[LOG] Fallback disease info found ✅ | {fallback_name}")
             else:
                 response = "I couldn't find any info on that disease. Try another one?"
-                print(f"[LOG] Fallback description empty ❌ | {fallback_name}")
         except Exception as e:
             response = "Something went wrong fetching external disease info."
             print(f"[ERROR] Disease fallback exception: {e}")
@@ -105,15 +108,19 @@ class ActionGetPlantInfo(Action):
         return []
 
 
+# ======================
+# 🌱 Planting Techniques Action
+# ======================
 class ActionGetPlantingTechniques(Action):
     def name(self):
         return "action_get_planting_techniques"
 
     def run(self, dispatcher, tracker, domain):
         user_query = tracker.latest_message.get("text").strip().lower()
-
-        # Keywords to qualify as a planting-related question
-        KEYWORDS = ["planting", "grow", "soil", "water", "care", "light", "sun", "requirement", "method"]
+        KEYWORDS = [
+            "planting", "grow", "soil", "water", "care",
+            "light", "sun", "requirement", "method"
+        ]
 
         if not any(word in user_query for word in KEYWORDS):
             dispatcher.utter_message(
@@ -122,7 +129,6 @@ class ActionGetPlantingTechniques(Action):
             return []
 
         try:
-            # Fetch plant data from local DB
             conn = sqlite3.connect(PLANTING_DB_PATH)
             cursor = conn.cursor()
             cursor.execute(
@@ -162,32 +168,29 @@ class ActionGetPlantingTechniques(Action):
                         f"**Soil Type:** {soil_type}\n\n"
                         f"**Care Instructions:** {care_instructions}"
                     )
-
                 dispatcher.utter_message(text=response)
                 return []
 
         except Exception as e:
             print(f"[ERROR] Local DB planting lookup failed: {e}")
 
-        # === Fallback: External API (OpenFarm via Flask) ===
-        fallback_name = user_query.replace("?", "").strip()
-        print(f"[INFO] Looking up planting techniques for: {fallback_name}")
+        # Fallback to OpenFarm
+        fallback_name = sanitize_for_fallback(user_query)
+        print(f"[INFO] Looking up planting fallback: {fallback_name}")
 
         try:
             r = requests.get(f"{FLASK_API_URL}/planting_techniques", params={"name": fallback_name})
             data = r.json()
             if "error" not in data:
                 response = (
-                    f"**{data['plant_name']} (from external source)**\n\n"
+                    f"**{data.get('plant_name', fallback_name.title())} (from external source)**\n\n"
                     f"**Description:** {data.get('description', 'No info')}\n\n"
                     f"**Sun Requirements:** {data.get('sun_requirements', 'Unknown')}\n\n"
                     f"**Sowing Method:** {data.get('sowing_method', 'Unknown')}\n\n"
                     f"**Source:** {data.get('source', 'N/A')}"
                 )
-                print(f"[LOG] External planting info found ✅ | {fallback_name}")
             else:
                 response = "I couldn’t find anything for that plant. Try a different name?"
-                print(f"[LOG] External planting info missing ❌ | {fallback_name}")
         except Exception as e:
             response = "Something went wrong while trying to look that up externally."
             print(f"[ERROR] Planting fallback exception: {e}")
