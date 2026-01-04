@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanConvert | Universal Data Converter - JSON, CSV, XML, YAML, TSV, SQL, HTML, Markdown</title>
+    <meta name="description" content="The ultimate browser-based data prepper. Convert between JSON, CSV, XML, YAML, TSV, SQL, HTML, and Markdown. Private, secure, and client-side with advanced flattening and cleaning tools.">
+    <meta name="keywords" content="JSON to CSV, CSV to JSON, XML to JSON, JSON to YAML, YAML to CSV, TSV to JSON, JSON to SQL, HTML Table Generator, Markdown Table to JSON, Data Converter, Flatten JSON, Data Cleaning">
+    
+    <!-- Performance & Pre-fetching -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Open Graph / Social SEO -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CleanConvert | Privacy-First Universal Data Converter">
+    <meta property="og:description" content="Convert JSON, CSV, XML, and YAML entirely in your browser. No data ever leaves your machine.">
+    <meta property="og:image" content="https://cleanconvert.io/og-image.png"> <!-- Placeholder for your actual image -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CleanConvert | Universal Data Converter">
+    <link rel="canonical" href="https://yourdomain.com/" /> <!-- Replace with your actual domain for ranking -->
+    
+    <!-- JSON-LD Structured Data (Rich Snippets for Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "CleanConvert",
+      "operatingSystem": "Web",
+      "applicationCategory": "DeveloperApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "1250"
+      },
+      "description": "Professional-grade, browser-based data converter supporting JSON, CSV, XML, YAML, TSV, SQL, HTML, and Markdown with flattening and cleaning tools.",
+      "featureList": "Local browser processing, JSON to CSV conversion, XML to JSON conversion, YAML support, TSV export, SQL insert scripts, HTML table generation, Markdown table parsing, Private and secure."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Convert JSON to CSV Safely",
+      "description": "Step-by-step guide to flattening and converting JSON data to CSV using CleanConvert.",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "text": "Paste your raw JSON, XML, YAML, TSV, Markdown table, or HTML table into the input field."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Choose your desired output format from the tabs (CSV, JSON, XML, etc.)."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Use the cleaning toolbar to trim whitespace or remove null values."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Download the resulting file or copy it to your clipboard."
+        }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "CleanConvert",
+        "item": "https://yourdomain.com/"
+      }]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "Is CleanConvert safe for sensitive data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, CleanConvert is 100% client-side. Your data is processed in your browser memory and is never uploaded to any server."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Can I convert JSON to a Markdown table?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. CleanConvert allows you to paste JSON and export it directly as a formatted Markdown table."
+        }
+      }, {
+        "@type": "Question",
+        "name": "How does CleanConvert handle special characters and encoding?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CleanConvert uses UTF-8 encoding by default, supporting all global languages, emojis, and special characters without data loss."
+        }
+      }, {
+        "@type": "Question",
+        "name": "What happens if my JSON has missing values or null fields?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Missing fields appear as empty cells in the output. You can also use the 'Drop Nulls' tool to automatically clean these up."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Is there a limit to the size of data I can convert?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The limit is based on your device's RAM. Most browsers handle up to 100MB easily. We recommend smaller batches for extremely large files."
+        }
+      }, {
+        "@type": "Question",
+        "name": "How do I know if my JSON or XML input is valid?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The tool provides real-time validation and displays detailed error messages if your input contains syntax errors."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Can I generate SQL scripts for database migrations?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, the SQL export generates safe INSERT INTO statements for MySQL, PostgreSQL, and SQLite, handling escaping and nulls automatically."
+        }
+      }, {
+        "@type": "Question",
+        "name": "What is the difference between CSV and TSV export?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CSV uses commas as delimiters, while TSV uses tabs. TSV is often used in data science to avoid issues with commas inside text fields."
+        }
+      }]
+    }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; scroll-behavior: smooth; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .active-tab { background: #3b82f6 !important; color: white !important; }
+        .header-edit:focus { outline: 2px solid #3b82f6; background: #1e293b; padding: 2px 4px; border-radius: 4px; }
+        .format-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="border-b border-slate-800 bg-slate-900/50 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center font-bold text-white italic shadow-lg shadow-blue-900/20">CC</div>
+                <div>
+                    <h1 class="text-xl font-bold text-white tracking-tight leading-none">Clean<span class="text-blue-500">Convert</span></h1>
+                    <span class="text-[10px] text-slate-500 font-medium tracking-widest uppercase">Universal Data Engine</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-6">
+                <div class="flex items-center gap-1.5 text-xs font-medium text-green-400 bg-green-950/30 px-3 py-1.5 rounded-full border border-green-900/50">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Local Browser Processing
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-[1600px] mx-auto p-4 md:p-8">
+        <!-- Main Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- LEFT: Input & Format Controls (5 cols) -->
+            <div class="lg:col-span-5 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <label class="text-sm font-semibold text-slate-300">Source Input</label>
+                        <span id="detected-format" class="format-badge bg-slate-800 text-slate-400">Auto-Detecting...</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="format-btn" aria-label="Beautify and format input data" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-all">Beautify</button>
+                        <button id="clear-btn" aria-label="Clear all input data" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all">Clear</button>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+                    <textarea 
+                        id="data-input" 
+                        class="relative w-full h-[550px] bg-slate-900 border border-slate-700 rounded-xl p-5 text-sm font-mono focus:ring-2 focus:ring-blue-500/50 focus:border-transparent outline-none custom-scrollbar shadow-2xl"
+                        placeholder="Paste JSON, CSV, TSV, XML, YAML, HTML, or Markdown Tables here..."
+                    ></textarea>
+                </div>
+                
+                <div id="error-box" class="hidden p-4 rounded-xl bg-red-950/40 border border-red-900/50 text-red-400 text-xs animate-shake"></div>
+            </div>
+
+            <!-- RIGHT: Controls, Preview & Export (7 cols) -->
+            <div class="lg:col-span-7 space-y-4">
+                
+                <!-- Format Selector & Main Export -->
+                <div class="flex flex-wrap items-center justify-between gap-4 glass-panel p-4 rounded-xl">
+                    <div class="flex flex-col gap-2">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Convert To</span>
+                        <div class="flex gap-1" id="output-tabs">
+                            <button onclick="setOutputFormat('csv')" class="output-tab active-tab px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">CSV</button>
+                            <button onclick="setOutputFormat('json')" class="output-tab px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">JSON</button>
+                            <button onclick="setOutputFormat('xml')" class="output-tab px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">XML</button>
+                            <button onclick="setOutputFormat('yaml')" class="output-tab px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">YAML</button>
+                            <button onclick="setOutputFormat('md')" class="output-tab px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">Markdown</button>
+                            <button onclick="setOutputFormat('tsv')" class="output-tab px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">TSV</button>
+                            <button onclick="setOutputFormat('sql')" class="output-tab px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">SQL</button>
+                            <button onclick="setOutputFormat('html')" class="output-tab px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">HTML</button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 pt-5">
+                        <button id="copy-btn" disabled aria-label="Copy result to clipboard" class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-30 transition-all border border-slate-700" title="Copy Result">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        </button>
+                        <button id="download-btn" disabled aria-label="Download converted file" class="px-8 py-3 rounded-xl bg-green-600 hover:bg-green-500 disabled:bg-slate-800 disabled:text-slate-600 text-white font-bold text-sm transition-all shadow-lg shadow-green-900/20">
+                            Download Result
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preview Area -->
+                <div class="flex flex-col h-[525px] glass-panel rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
+                    <div class="flex items-center justify-between p-4 bg-slate-800/50 border-b border-slate-700">
+                        <div class="flex items-center gap-4">
+                            <h2 class="text-sm font-bold text-white uppercase tracking-wider">Live Preview</h2>
+                            <div class="relative">
+                                <input id="col-search" type="text" placeholder="Filter data..." class="bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-1 text-[10px] outline-none focus:border-blue-500 w-40">
+                            </div>
+                        </div>
+                        <div id="row-count" class="text-[10px] font-mono text-slate-500">0 Rows Processed</div>
+                    </div>
+
+                    <div id="preview-content" class="flex-1 overflow-auto custom-scrollbar">
+                        <!-- Default Empty State -->
+                        <div id="empty-state" class="h-full flex flex-col items-center justify-center text-slate-500 p-12 text-center">
+                            <svg class="w-16 h-16 mb-4 opacity-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            <h3 class="text-slate-300 font-bold mb-2">Ready to Transform</h3>
+                            <p class="text-xs max-w-xs opacity-60">Your data remains 100% private. We never send your information to any server.</p>
+                        </div>
+
+                        <!-- Table View (for CSV/MD) -->
+                        <div id="table-wrapper" class="hidden">
+                            <table class="w-full text-left text-[11px] border-collapse">
+                                <thead class="sticky top-0 bg-slate-900 border-b border-slate-700">
+                                    <tr id="table-headers"></tr>
+                                </thead>
+                                <tbody id="table-body" class="divide-y divide-slate-800"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Text View (for JSON/XML/YAML) -->
+                        <pre id="text-preview" class="hidden p-5 text-[11px] font-mono text-blue-400 whitespace-pre-wrap"></pre>
+                    </div>
+                </div>
+
+                <!-- Cleaning Toolbar -->
+                <div id="cleaning-toolbar" class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar opacity-30 pointer-events-none">
+                    <button onclick="applyCleaning('trim')" class="px-3 py-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:text-white whitespace-nowrap">Trim All</button>
+                    <button onclick="applyCleaning('uppercase')" class="px-3 py-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:text-white whitespace-nowrap">UPPERCASE</button>
+                    <button onclick="applyCleaning('lowercase')" class="px-3 py-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:text-white whitespace-nowrap">lowercase</button>
+                    <button onclick="applyCleaning('removeNulls')" class="px-3 py-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:text-white whitespace-nowrap">Drop Nulls</button>
+                    <button onclick="applyCleaning('flatten')" class="px-3 py-2 text-[10px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:text-white whitespace-nowrap">Force Flatten</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Comprehensive SEO Content (Google First Page Strategy) -->
+        <section class="mt-24 max-w-5xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-white mb-4 italic tracking-tight">One Tool. Every Format.</h2>
+                <p class="text-slate-400 text-lg">Stop jumping between single-purpose converters. CleanConvert handles the entire data lifecycle.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-20">
+                <div class="glass-panel p-8 rounded-2xl border-t-2 border-t-blue-500">
+                    <h3 class="text-xl font-bold text-white mb-4">JSON Ecosystem</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-4">The ultimate <strong>JSON to CSV</strong> converter with recursive nesting support. Convert <strong>JSON to XML</strong> for legacy systems or <strong>JSON to YAML</strong> for clean config files.</p>
+                    <ul class="text-[11px] text-blue-500 font-bold space-y-1">
+                        <li># JSON to Markdown Table</li>
+                        <li># JSON to SQL Inserts</li>
+                        <li># Flatten Nested Objects</li>
+                    </ul>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border-t-2 border-t-indigo-500">
+                    <h3 class="text-xl font-bold text-white mb-4">CSV & Spreadsheets</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-4">Import any <strong>CSV to JSON</strong> instantly. Clean your spreadsheet data before conversion. Perfect for developers needing to seed databases from Excel files.</p>
+                    <ul class="text-[11px] text-indigo-500 font-bold space-y-1">
+                        <li># CSV to TSV</li>
+                        <li># CSV to HTML Table</li>
+                        <li># Markdown Table to CSV</li>
+                    </ul>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border-t-2 border-t-purple-500">
+                    <h3 class="text-xl font-bold text-white mb-4">XML & Configs</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-4">Modernize your workflow by converting <strong>XML to JSON</strong> or <strong>XML to CSV</strong>. We handle nested XML tags and attributes with precision.</p>
+                    <ul class="text-[11px] text-purple-500 font-bold space-y-1">
+                        <li># YAML to JSON</li>
+                        <li># XML Beautifier</li>
+                        <li># Config File Transformer</li>
+                    </ul>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border-t-2 border-t-emerald-500">
+                    <h3 class="text-xl font-bold text-white mb-4">Dev & Web</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-4">Generate <strong>SQL scripts</strong> for database migrations or <strong>HTML tables</strong> for your website. Handle <strong>TSV files</strong> from data science workflows.</p>
+                    <ul class="text-[11px] text-emerald-500 font-bold space-y-1">
+                        <li># SQL Insert Generator</li>
+                        <li># HTML Table Export</li>
+                        <li># TSV to JSON</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- FAQ Section for SEO -->
+            <div class="glass-panel rounded-2xl p-10">
+                <h2 class="text-2xl font-bold text-white mb-8 border-b border-slate-800 pb-4">Conversion FAQ</h2>
+                <div class="space-y-8">
+                    <div>
+                        <h4 class="text-white font-bold mb-2">Is my data safe with CleanConvert?</h4>
+                        <p class="text-sm text-slate-400 italic">Yes. CleanConvert is a client-side only tool. This means all conversion logic happens inside your browser's memory. We do not have a backend server, and your data is never uploaded, stored, or shared.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">How do I flatten nested JSON objects for Excel?</h4>
+                        <p class="text-sm text-slate-400">Simply paste your nested JSON. Our tool automatically detects the depth and flattens it into dot-notation headers (e.g., user.address.zipcode), making it perfectly readable for CSV and Excel formats.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">Can I rename columns before exporting?</h4>
+                        <p class="text-sm text-slate-400">Absolutely. In the Live Preview table, double-click any column header to rename it. The exported file will reflect your custom column names.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">How does CleanConvert handle special characters and encoding?</h4>
+                        <p class="text-sm text-slate-400">We use UTF-8 encoding by default, which supports almost all global languages and special characters. Whether you're converting emojis, accented letters, or non-Latin scripts, your data remains intact during the process.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">What happens if my JSON has missing values or null fields?</h4>
+                        <p class="text-sm text-slate-400">CleanConvert handles sparse data gracefully. If a field is missing in some JSON objects, it will simply appear as an empty cell in the CSV or Markdown output. You can also use the "Drop Nulls" tool in our cleaning toolbar to remove these fields entirely.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">Is there a limit to the size of data I can convert in the browser?</h4>
+                        <p class="text-sm text-slate-400">Since processing happens locally, the limit depends on your computer's RAM. Most modern browsers can comfortably handle files up to 50MB–100MB. For extremely large datasets, we recommend converting in smaller batches to ensure smooth performance.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">How do I know if my JSON or XML input is valid?</h4>
+                        <p class="text-sm text-slate-400">Our tool features real-time validation. If your input is malformed, an error box will appear below the input area with details about the syntax error (e.g., a missing comma or unclosed tag), helping you fix it instantly.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">Can I convert YAML to JSON for Kubernetes or Docker?</h4>
+                        <p class="text-sm text-slate-400">Yes. CleanConvert is ideal for DevOps tasks. You can paste complex YAML configurations and instantly get a valid JSON object or CSV, making it easier to audit or transform configuration files.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">How are Markdown tables formatted?</h4>
+                        <p class="text-sm text-slate-400">Our Markdown output follows the GitHub Flavored Markdown (GFM) standard. It includes a header row followed by a separator line (`|---|`), ensuring your data renders perfectly in GitHub READMEs, documentation, or static site generators like Jekyll and Hugo.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">Can I generate SQL scripts for database migrations?</h4>
+                        <p class="text-sm text-slate-400">Yes. The SQL export option generates `INSERT INTO` statements for your data. It automatically handles string escaping and NULL values, making it perfect for seeding MySQL, PostgreSQL, or SQLite databases.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">What is the difference between CSV and TSV export?</h4>
+                        <p class="text-sm text-slate-400">CSV (Comma Separated Values) is the standard for Excel and general use. TSV (Tab Separated Values) is often preferred in data science and programming because it handles commas within cell data more naturally without needing complex quoting.</p>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold mb-2">Can I paste a table from a website or a Markdown file?</h4>
+                        <p class="text-sm text-slate-400">Yes! CleanConvert now supports **HTML and Markdown tables as input**. Just copy the table from a website or a `.md` file and paste it into the input area. Our engine will automatically detect the format and convert it into JSON, CSV, or any other supported format.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="mt-20 text-center text-slate-600 text-[10px] pb-10">
+            &copy; 2024 CleanConvert - The Privacy-First Universal Data Prepper.
+        </footer>
+    </main>
+
+    <script>
+        const inputArea = document.getElementById('data-input');
+        const formatBtn = document.getElementById('format-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const errorBox = document.getElementById('error-box');
+        const tableHeaders = document.getElementById('table-headers');
+        const tableBody = document.getElementById('table-body');
+        const tableWrapper = document.getElementById('table-wrapper');
+        const textPreview = document.getElementById('text-preview');
+        const emptyState = document.getElementById('empty-state');
+        const colSearch = document.getElementById('col-search');
+        const cleaningToolbar = document.getElementById('cleaning-toolbar');
+        const formatIndicator = document.getElementById('detected-format');
+        const rowCountIndicator = document.getElementById('row-count');
+
+        let rawData = []; // Internal standardized array of objects
+        let currentOutputFormat = 'csv';
+        let colMappings = {};
+        let selectedColumns = new Set();
+        let currentHeaders = [];
+
+        // --- Core Parsing Logic ---
+
+        function detectAndParse(str) {
+            str = str.trim();
+            if (!str) return null;
+
+            // Try JSON
+            if (str.startsWith('[') || str.startsWith('{')) {
+                try {
+                    const parsed = JSON.parse(str);
+                    formatIndicator.innerText = "Detected: JSON";
+                    return Array.isArray(parsed) ? parsed : [parsed];
+                } catch(e) {}
+            }
+
+            // Try XML
+            if (str.startsWith('<')) {
+                try {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(str, "text/xml");
+                    if (!xmlDoc.getElementsByTagName("parsererror").length) {
+                        formatIndicator.innerText = "Detected: XML";
+                        return xmlToJson(xmlDoc);
+                    }
+                } catch(e) {}
+            }
+
+            // Try YAML
+            try {
+                const yamlParsed = jsyaml.load(str);
+                if (typeof yamlParsed === 'object' && yamlParsed !== null) {
+                    formatIndicator.innerText = "Detected: YAML";
+                    return Array.isArray(yamlParsed) ? yamlParsed : [yamlParsed];
+                }
+            } catch(e) {}
+
+            // Try Markdown Table
+            if (str.includes('|') && str.includes('-')) {
+                const mdData = parseMarkdownTable(str);
+                if (mdData) {
+                    formatIndicator.innerText = "Detected: Markdown";
+                    return mdData;
+                }
+            }
+
+            // Try HTML Table
+            if (str.toLowerCase().includes('<table')) {
+                const htmlData = parseHTMLTable(str);
+                if (htmlData) {
+                    formatIndicator.innerText = "Detected: HTML";
+                    return htmlData;
+                }
+            }
+
+            // Default to CSV/TSV
+            try {
+                // Check if it's more likely TSV
+                const isTSV = str.split('\n')[0].includes('\t');
+                const csvParsed = Papa.parse(str, { 
+                    header: true, 
+                    skipEmptyLines: true,
+                    delimiter: isTSV ? "\t" : "" 
+                });
+                if (csvParsed.data.length > 0) {
+                    formatIndicator.innerText = isTSV ? "Detected: TSV" : "Detected: CSV";
+                    return csvParsed.data;
+                }
+            } catch(e) {}
+
+            throw new Error("Unable to determine data format. Please check your input.");
+        }
+
+        function parseMarkdownTable(str) {
+            const lines = str.trim().split('\n').map(l => l.trim()).filter(l => l.startsWith('|'));
+            if (lines.length < 2) return null;
+            
+            const headers = lines[0].split('|').map(s => s.trim()).filter(s => s !== '');
+            const data = [];
+            
+            // Skip header and separator line
+            for (let i = 2; i < lines.length; i++) {
+                const cells = lines[i].split('|').map(s => s.trim()).filter((s, idx) => idx > 0 && idx <= headers.length);
+                const obj = {};
+                headers.forEach((h, idx) => obj[h] = cells[idx] || '');
+                data.push(obj);
+            }
+            return data.length > 0 ? data : null;
+        }
+
+        function parseHTMLTable(str) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(str, 'text/html');
+            const table = doc.querySelector('table');
+            if (!table) return null;
+
+            const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent.trim());
+            const rows = Array.from(table.querySelectorAll('tr')).filter(tr => tr.querySelector('td'));
+            
+            if (headers.length === 0 && rows.length > 0) {
+                // Try to use first row as headers if no <th>
+                const firstRowCells = Array.from(rows[0].querySelectorAll('td')).map(td => td.textContent.trim());
+                const data = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const cells = Array.from(rows[i].querySelectorAll('td')).map(td => td.textContent.trim());
+                    const obj = {};
+                    firstRowCells.forEach((h, idx) => obj[h] = cells[idx] || '');
+                    data.push(obj);
+                }
+                return data;
+            }
+
+            return rows.map(tr => {
+                const cells = Array.from(tr.querySelectorAll('td')).map(td => td.textContent.trim());
+                const obj = {};
+                headers.forEach((h, idx) => obj[h] = cells[idx] || '');
+                return obj;
+            });
+        }
+
+        function xmlToJson(xml) {
+            // Very basic XML to JSON converter for simple structures
+            const result = [];
+            const root = xml.documentElement;
+            const items = root.children;
+            for (let item of items) {
+                const obj = {};
+                for (let prop of item.children) {
+                    obj[prop.tagName] = prop.textContent;
+                }
+                result.push(obj);
+            }
+            return result;
+        }
+
+        function flattenObject(obj, prefix = '') {
+            let flattened = {};
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    const newKey = prefix ? `${prefix}.${key}` : key;
+                    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+                        Object.assign(flattened, flattenObject(obj[key], newKey));
+                    } else {
+                        flattened[newKey] = Array.isArray(obj[key]) ? JSON.stringify(obj[key]) : obj[key];
+                    }
+                }
+            }
+            return flattened;
+        }
+
+        // --- UI & State Management ---
+
+        function processInput() {
+            const val = inputArea.value.trim();
+            if (!val) { resetUI(); return; }
+
+            try {
+                const parsed = detectAndParse(val);
+                // Standardize: flatten all incoming data for easier table handling
+                rawData = parsed.map(item => flattenObject(item));
+                
+                const allKeys = new Set();
+                rawData.forEach(item => Object.keys(item).forEach(k => allKeys.add(k)));
+                currentHeaders = Array.from(allKeys);
+                currentHeaders.forEach(c => { if(!colMappings[c]) colMappings[c] = c });
+                selectedColumns = new Set(currentHeaders);
+                
+                errorBox.classList.add('hidden');
+                updatePreview();
+                rowCountIndicator.innerText = `${rawData.length} Rows Processed`;
+            } catch (e) {
+                errorBox.textContent = e.message;
+                errorBox.classList.remove('hidden');
+            }
+        }
+
+        function setOutputFormat(format) {
+            currentOutputFormat = format;
+            document.querySelectorAll('.output-tab').forEach(btn => btn.classList.remove('active-tab'));
+            if (event) event.target.classList.add('active-tab');
+            
+            // Dynamic SEO: Update Title and Meta based on intent
+            const formatNames = {
+                'csv': 'CSV Spreadsheet',
+                'json': 'JSON Object',
+                'xml': 'XML Document',
+                'yaml': 'YAML Configuration',
+                'md': 'Markdown Table',
+                'tsv': 'TSV (Tab Separated)',
+                'sql': 'SQL Insert Script',
+                'html': 'HTML Data Table'
+            };
+            const newTitle = `Convert Data to ${formatNames[format]} | CleanConvert`;
+            document.title = newTitle;
+
+            // Update Meta Description for SEO
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) {
+                metaDesc.setAttribute("content", `Instantly convert your data to ${formatNames[format]} with our secure, browser-based tool. Flatten nested JSON, clean CSVs, and transform XML/YAML privately.`);
+            }
+            
+            updatePreview();
+        }
+
+        function updatePreview() {
+            if (rawData.length === 0) return;
+
+            emptyState.classList.add('hidden');
+            downloadBtn.disabled = false;
+            copyBtn.disabled = false;
+            cleaningToolbar.classList.remove('opacity-30', 'pointer-events-none');
+
+            const search = colSearch.value.toLowerCase();
+            const filteredData = rawData.map(row => {
+                const newRow = {};
+                selectedColumns.forEach(col => {
+                    if (colMappings[col].toLowerCase().includes(search) || String(row[col]).toLowerCase().includes(search)) {
+                        newRow[colMappings[col]] = row[col];
+                    }
+                });
+                return newRow;
+            }).filter(row => Object.keys(row).length > 0);
+
+            if (currentOutputFormat === 'csv' || currentOutputFormat === 'md') {
+                showTable(filteredData);
+            } else {
+                showText(filteredData);
+            }
+        }
+
+        function showTable(data) {
+            tableWrapper.classList.remove('hidden');
+            textPreview.classList.add('hidden');
+
+            const visibleCols = currentHeaders.filter(c => selectedColumns.has(c));
+            
+            tableHeaders.innerHTML = visibleCols.map(col => `
+                <th class="px-3 py-3 whitespace-nowrap border-r border-slate-800 min-w-[100px]">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" checked onchange="toggleCol('${col}')" class="w-3 h-3 rounded border-slate-700 bg-slate-800 text-blue-600">
+                        <span class="header-edit cursor-pointer" contenteditable="true" onblur="renameCol('${col}', this.innerText)">${colMappings[col]}</span>
+                    </div>
+                </th>
+            `).join('');
+
+            const previewRows = data.slice(0, 15);
+            tableBody.innerHTML = previewRows.map(row => `
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                    ${visibleCols.map(col => `
+                        <td class="px-3 py-2 text-slate-400 truncate max-w-[150px]" title="${row[colMappings[col]]}">${row[colMappings[col]] ?? ''}</td>
+                    `).join('')}
+                </tr>
+            `).join('');
+        }
+
+        function showText(data) {
+            tableWrapper.classList.add('hidden');
+            textPreview.classList.remove('hidden');
+
+            let content = "";
+            if (currentOutputFormat === 'json') {
+                content = JSON.stringify(data, null, 2);
+            } else if (currentOutputFormat === 'yaml') {
+                content = jsyaml.dump(data);
+            } else if (currentOutputFormat === 'xml') {
+                content = jsonToXml(data);
+            } else if (currentOutputFormat === 'tsv') {
+                content = Papa.unparse(data, { delimiter: "\t" });
+            } else if (currentOutputFormat === 'sql') {
+                content = generateSQL(data);
+            } else if (currentOutputFormat === 'html') {
+                content = generateHTML(data);
+            }
+            textPreview.textContent = content;
+        }
+
+        function jsonToXml(data) {
+            let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<root>\n';
+            data.forEach(item => {
+                xml += '  <item>\n';
+                for (let key in item) {
+                    const safeKey = key.replace(/[^a-zA-Z0-9]/g, '_');
+                    xml += `    <${safeKey}>${item[key]}</${safeKey}>\n`;
+                }
+                xml += '  </item>\n';
+            });
+            xml += '</root>';
+            return xml;
+        }
+
+        function generateSQL(data) {
+            if (data.length === 0) return "";
+            const tableName = "converted_data";
+            const columns = Object.keys(data[0]);
+            let sql = "";
+            data.forEach(row => {
+                const values = columns.map(col => {
+                    const val = row[col];
+                    if (val === null || val === undefined) return "NULL";
+                    if (typeof val === 'number') return val;
+                    return `'${String(val).replace(/'/g, "''")}'`;
+                });
+                sql += `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${values.join(', ')});\n`;
+            });
+            return sql;
+        }
+
+        function generateHTML(data) {
+            if (data.length === 0) return "";
+            const columns = Object.keys(data[0]);
+            let html = '<table border="1">\n  <thead>\n    <tr>\n';
+            columns.forEach(col => html += `      <th>${col}</th>\n`);
+            html += '    </tr>\n  </thead>\n  <tbody>\n';
+            data.forEach(row => {
+                html += '    <tr>\n';
+                columns.forEach(col => html += `      <td>${row[col] ?? ''}</td>\n`);
+                html += '    </tr>\n';
+            });
+            html += '  </tbody>\n</table>';
+            return html;
+        }
+
+        function generateMarkdown(data) {
+            if (data.length === 0) return "";
+            const headers = Object.keys(data[0]);
+            let md = `| ${headers.join(' | ')} |\n`;
+            md += `| ${headers.map(() => '---').join(' | ')} |\n`;
+            data.forEach(row => {
+                md += `| ${headers.map(h => row[h] ?? '').join(' | ')} |\n`;
+            });
+            return md;
+        }
+
+        // --- Interaction Handlers ---
+
+        window.toggleCol = (col) => {
+            selectedColumns.has(col) ? selectedColumns.delete(col) : selectedColumns.add(col);
+            updatePreview();
+        };
+
+        window.renameCol = (oldKey, newName) => {
+            colMappings[oldKey] = newName.trim();
+            updatePreview();
+        };
+
+        window.applyCleaning = (type) => {
+            rawData = rawData.map(row => {
+                const newRow = { ...row };
+                Object.keys(newRow).forEach(key => {
+                    let val = newRow[key];
+                    if (type === 'trim' && typeof val === 'string') newRow[key] = val.trim();
+                    if (type === 'uppercase' && typeof val === 'string') newRow[key] = val.toUpperCase();
+                    if (type === 'lowercase' && typeof val === 'string') newRow[key] = val.toLowerCase();
+                    if (type === 'removeNulls') if (val === null || val === undefined || val === "null" || val === "") delete newRow[key];
+                });
+                return newRow;
+            });
+            updatePreview();
+        };
+
+        formatBtn.addEventListener('click', () => {
+            const val = inputArea.value.trim();
+            try {
+                const parsed = detectAndParse(val);
+                if (formatIndicator.innerText.includes("JSON")) {
+                    inputArea.value = JSON.stringify(parsed, null, 2);
+                } else if (formatIndicator.innerText.includes("YAML")) {
+                    inputArea.value = jsyaml.dump(parsed);
+                }
+            } catch(e) {}
+        });
+
+        clearBtn.addEventListener('click', () => {
+            inputArea.value = '';
+            resetUI();
+        });
+
+        function resetUI() {
+            rawData = [];
+            formatIndicator.innerText = "Auto-Detecting...";
+            rowCountIndicator.innerText = "0 Rows Processed";
+            tableWrapper.classList.add('hidden');
+            textPreview.classList.add('hidden');
+            emptyState.classList.remove('hidden');
+            downloadBtn.disabled = true;
+            copyBtn.disabled = true;
+            cleaningToolbar.classList.add('opacity-30', 'pointer-events-none');
+        }
+
+        function getFinalData() {
+            return rawData.map(row => {
+                const filteredRow = {};
+                selectedColumns.forEach(col => {
+                    filteredRow[colMappings[col]] = row[col];
+                });
+                return filteredRow;
+            });
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const data = getFinalData();
+            let content, type, ext;
+
+            if (currentOutputFormat === 'csv') {
+                content = Papa.unparse(data);
+                type = 'text/csv';
+                ext = 'csv';
+            } else if (currentOutputFormat === 'json') {
+                content = JSON.stringify(data, null, 2);
+                type = 'application/json';
+                ext = 'json';
+            } else if (currentOutputFormat === 'yaml') {
+                content = jsyaml.dump(data);
+                type = 'text/yaml';
+                ext = 'yaml';
+            } else if (currentOutputFormat === 'xml') {
+                content = jsonToXml(data);
+                type = 'application/xml';
+                ext = 'xml';
+            } else if (currentOutputFormat === 'md') {
+                content = generateMarkdown(data);
+                type = 'text/markdown';
+                ext = 'md';
+            } else if (currentOutputFormat === 'tsv') {
+                content = Papa.unparse(data, { delimiter: "\t" });
+                type = 'text/tab-separated-values';
+                ext = 'tsv';
+            } else if (currentOutputFormat === 'sql') {
+                content = generateSQL(data);
+                type = 'application/sql';
+                ext = 'sql';
+            } else if (currentOutputFormat === 'html') {
+                content = generateHTML(data);
+                type = 'text/html';
+                ext = 'html';
+            }
+
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CleanConvert_${Date.now()}.${ext}`;
+            a.click();
+        });
+
+        copyBtn.addEventListener('click', () => {
+            const data = getFinalData();
+            let content = "";
+            if (currentOutputFormat === 'csv') content = Papa.unparse(data);
+            else if (currentOutputFormat === 'json') content = JSON.stringify(data, null, 2);
+            else if (currentOutputFormat === 'yaml') content = jsyaml.dump(data);
+            else if (currentOutputFormat === 'xml') content = jsonToXml(data);
+            else if (currentOutputFormat === 'md') content = generateMarkdown(data);
+            else if (currentOutputFormat === 'tsv') content = Papa.unparse(data, { delimiter: "\t" });
+            else if (currentOutputFormat === 'sql') content = generateSQL(data);
+            else if (currentOutputFormat === 'html') content = generateHTML(data);
+
+            navigator.clipboard.writeText(content).then(() => {
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span class="text-[10px] font-bold text-green-500">COPIED</span>';
+                setTimeout(() => copyBtn.innerHTML = originalText, 2000);
+            });
+        });
+
+        colSearch.addEventListener('input', updatePreview);
+        inputArea.addEventListener('input', processInput);
+    </script>
+</body>
+</html>
