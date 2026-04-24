@@ -30,12 +30,12 @@ def cloud_inference(temperature, moisture, methane):
     moisture = int(moisture)
     methane  = int(methane)
 
-    if methane <= METHANE_THRESH:
-        result = 'COMPOST_READY'
+    if moisture <= MOISTURE_THRESH:
+        result = 'TOO_WET'
     elif temperature > TEMP_THRESH:
         result = 'TOO_DRY'
-    elif moisture <= MOISTURE_THRESH:
-        result = 'TOO_WET'
+    elif methane <= METHANE_THRESH:
+        result = 'COMPOST_READY'
     else:
         result = 'TOO_DRY'
 
