@@ -11,37 +11,35 @@ DB = os.path.join(BASE_DIR, "compost.db")
 # Mirrors rule_classify() in the notebook and classify() in compost_monitor.ino
 # Raw sensor units — no model file, no scaler, no ML library needed.
 
-MOISTURE_WET_MAX = 1350
-MOISTURE_DRY_MIN = 2100
-TEMP_HOT_LOW     = 31.0
-TEMP_HOT_HIGH    = 34.0
-METHANE_LOW      = 1900
-METHANE_HIGH     = 2100
+METHANE_THRESH  = 1341
+TEMP_THRESH     = 29.09
+MOISTURE_THRESH = 1906
 
 CLASS_LABELS = ['COMPOST_READY', 'TOO_DRY', 'TOO_WET']
 
+def normalize_result_label(value):
+    """Normalize labels so ESP32 and cloud comparisons are consistent."""
+    if value is None:
+        return "UNKNOWN"
+    normalized = str(value).strip().upper().replace(" ", "_")
+    return normalized or "UNKNOWN"
+
 def cloud_inference(temperature, moisture, methane):
     """Rule-based compost classifier — mirrors ESP32 logic exactly."""
+    temperature = float(temperature)
     moisture = int(moisture)
     methane  = int(methane)
 
-    if moisture <= MOISTURE_WET_MAX:
-        result = 'TOO_WET'
-    elif moisture >= MOISTURE_DRY_MIN:
-        result = 'TOO_DRY'
-    elif temperature >= TEMP_HOT_HIGH and methane < METHANE_LOW:
-        result = 'TOO_DRY'
-    elif temperature <= 26.5 and methane > METHANE_HIGH and moisture < 1600:
-        result = 'TOO_WET'
-    elif methane >= METHANE_HIGH:
+    if methane <= METHANE_THRESH:
         result = 'COMPOST_READY'
-    elif methane < METHANE_LOW:
+    elif temperature > TEMP_THRESH:
         result = 'TOO_DRY'
+    elif moisture <= MOISTURE_THRESH:
+        result = 'TOO_WET'
     else:
-        result = 'COMPOST_READY'
+        result = 'TOO_DRY'
 
-    # Confidence is always 1.0 — rules are deterministic
-    return result, 1.0
+    return normalize_result_label(result), 1.0
 
 # ── Database setup ────────────────────────────────────────────────────────────
 def init_db():
@@ -90,7 +88,7 @@ def receive_data():
     temperature  = data.get("temperature", 0)
     moisture     = data.get("moisture",    0)
     methane      = data.get("methane",     0)
-    esp32_result = data.get("result",      "UNKNOWN")
+    esp32_result = normalize_result_label(data.get("result", "UNKNOWN"))
 
     cloud_result, cloud_confidence = cloud_inference(temperature, moisture, methane)
 
@@ -112,7 +110,7 @@ def receive_data():
     return jsonify({
         "status":           "ok",
         "cloud_result":     cloud_result,
-        "cloud_confidence": 100.0   # deterministic — always 100%
+        "cloud_confidence": 100.0
     })
 
 @app.route('/latest', methods=['GET'])
